@@ -807,7 +807,7 @@ const CONFIG = {
   },
   // GOOGLE SHEET
   sheetId: '1x5fGi6Ms7RtNeOqX8bH2c9oJC1VOz2_Sj8U-edfNu1Q',
-  appsScriptUrl: 'YOUR_APPS_SCRIPT_WEB_APP_URL',
+  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbyzWGpopHUFKUuxp9GtLO4TNZlJYbC0z0JLf6W62PjcFFSmmWnSqEcpKFHGOgBQgMWl/exec',
 };
 
 const PRICING = {
@@ -944,7 +944,7 @@ function launchRzp(btn,msg){
 }
 
 function saveToSheet(data){
-  if(CONFIG.appsScriptUrl==='YOUR_APPS_SCRIPT_WEB_APP_URL')return;
+  if(CONFIG.appsScriptUrl==='https://script.google.com/macros/s/AKfycbyzWGpopHUFKUuxp9GtLO4TNZlJYbC0z0JLf6W62PjcFFSmmWnSqEcpKFHGOgBQgMWl/exec')return;
   fetch(CONFIG.appsScriptUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'signup',data})}).catch(()=>{});
 }
 

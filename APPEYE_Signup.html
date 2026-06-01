@@ -331,7 +331,7 @@ window._firebaseReady = true;
 // YOUR GOOGLE SHEET ID
 // ═══════════════════════════════════════════════
 const SHEET_ID = '1x5fGi6Ms7RtNeOqX8bH2c9oJC1VOz2_Sj8U-edfNu1Q';
-const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL'; // Set this after deploying Apps Script
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzWGpopHUFKUuxp9GtLO4TNZlJYbC0z0JLf6W62PjcFFSmmWnSqEcpKFHGOgBQgMWl/exec'; // Set this after deploying Apps Script
 
 // ═══════════════════════════════════════════════
 // STRIPE + RAZORPAY CONFIG
@@ -950,7 +950,7 @@ async function handlePayment() {
 }
 
 async function saveToSheet(data) {
-  if(APPS_SCRIPT_URL==='YOUR_APPS_SCRIPT_WEB_APP_URL') return;
+  if(APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycbyzWGpopHUFKUuxp9GtLO4TNZlJYbC0z0JLf6W62PjcFFSmmWnSqEcpKFHGOgBQgMWl/exec') return;
   try {
     await fetch(APPS_SCRIPT_URL, {
       method:'POST',
