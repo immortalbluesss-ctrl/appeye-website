@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APPEYE — Sign Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04050a;--bg2:#080b12;--bg3:#0d1018;
+  --eye:#00d4ff;--eye3:rgba(0,212,255,0.08);
+  --text:#eef0f8;--text2:#7a8099;--text3:#3a3f52;
+  --border:rgba(0,212,255,0.12);--border2:rgba(255,255,255,0.05);
+  --green:#22d3a0;--red:#ff4d6d;--gold:#f5c842;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% -5%,rgba(0,212,255,0.07) 0%,transparent 70%)}
+
+.card{background:var(--bg2);border:0.5px solid var(--border);border-radius:24px;padding:3rem;width:100%;max-width:480px;position:relative;z-index:1;box-shadow:0 40px 80px rgba(0,0,0,0.5)}
+
+/* Logo */
+.logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:2rem}
+.logo-name{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--text)}
+.logo-name span{color:var(--eye)}
+.tagline{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.12em;text-align:center;margin-bottom:2rem}
+
+/* Steps indicator */
+.steps-bar{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:2.5rem}
+.step-dot{width:32px;height:32px;border-radius:50%;border:0.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);transition:all 0.3s}
+.step-dot.active{border-color:var(--eye);color:var(--eye);background:var(--eye3)}
+.step-dot.done{border-color:var(--green);background:var(--green);color:var(--bg)}
+.step-line{width:40px;height:0.5px;background:var(--border2)}
+.step-line.done{background:var(--green)}
+
+/* Language selector */
+.lang-bar{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:2rem;flex-wrap:wrap}
+.lang-btn{font-family:'DM Mono',monospace;font-size:10px;padding:4px 10px;border-radius:6px;border:0.5px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;transition:all 0.2s}
+.lang-btn.active{border-color:var(--eye);color:var(--eye);background:var(--eye3)}
+
+/* Form */
+.form-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--text);margin-bottom:0.4rem}
+.form-sub{font-size:0.88rem;color:var(--text2);margin-bottom:1.75rem;font-weight:300}
+.form-group{margin-bottom:1.1rem}
+.form-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px;display:block}
+.form-input{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.95rem;outline:none;transition:border-color 0.2s}
+.form-input:focus{border-color:var(--eye)}
+.form-input::placeholder{color:var(--text3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* Phone input */
+.phone-wrap{display:flex;gap:8px}
+.phone-code{width:100px;flex-shrink:0}
+.phone-num{flex:1}
+
+/* OTP input */
+.otp-wrap{display:flex;gap:8px;justify-content:center;margin:1rem 0}
+.otp-input{width:48px;height:56px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;text-align:center;outline:none;transition:all 0.2s}
+.otp-input:focus{border-color:var(--eye);background:var(--eye3)}
+.otp-input.filled{border-color:var(--green)}
+
+/* Plan selector */
+.plan-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem}
+.plan-card{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;cursor:pointer;transition:all 0.2s}
+.plan-card:hover{border-color:var(--text3)}
+.plan-card.selected{border-color:var(--eye);background:var(--eye3)}
+.plan-radio{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--text3);flex-shrink:0;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
+.plan-card.selected .plan-radio{border-color:var(--eye);background:var(--eye)}
+.plan-radio-dot{width:6px;height:6px;border-radius:50%;background:var(--bg);display:none}
+.plan-card.selected .plan-radio-dot{display:block}
+.plan-info{flex:1}
+.plan-name{font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)}
+.plan-desc{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-top:2px}
+.plan-price{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--eye)}
+
+/* Consent */
+.consent-box{background:rgba(255,77,109,0.05);border:0.5px solid rgba(255,77,109,0.2);border-radius:10px;padding:1rem;margin-bottom:1.25rem}
+.consent-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--red);letter-spacing:0.08em;margin-bottom:0.75rem}
+.consent-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:0.6rem;cursor:pointer}
+.consent-item:last-child{margin-bottom:0}
+.consent-cb{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--text3);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.consent-cb.checked{background:var(--green);border-color:var(--green)}
+.consent-text{font-size:11px;color:var(--text2);line-height:1.5}
+.consent-text a{color:var(--eye)}
+.consent-text strong{color:var(--red)}
+
+/* Buttons */
+.btn-primary{width:100%;padding:15px;border-radius:10px;font-size:15px;background:var(--eye);color:var(--bg);border:none;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:hover{background:#33ddff;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,212,255,0.3)}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-ghost{width:100%;padding:12px;border-radius:10px;font-size:13px;background:transparent;color:var(--text2);border:0.5px solid var(--border2);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;margin-top:8px}
+.btn-ghost:hover{border-color:var(--text2);color:var(--text)}
+
+/* Messages */
+.msg{padding:10px 14px;border-radius:8px;font-family:'DM Mono',monospace;font-size:11px;margin-bottom:1rem;display:none;line-height:1.5}
+.msg.error{background:rgba(255,77,109,0.1);border:0.5px solid rgba(255,77,109,0.3);color:var(--red)}
+.msg.success{background:rgba(34,211,160,0.1);border:0.5px solid rgba(34,211,160,0.3);color:var(--green)}
+.msg.info{background:var(--eye3);border:0.5px solid var(--border);color:var(--eye)}
+.msg.show{display:block}
+
+/* Spinner */
+.spinner{width:16px;height:16px;border:2px solid rgba(4,5,10,0.3);border-top-color:var(--bg);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Timer */
+.resend-timer{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);text-align:center;margin-top:0.75rem}
+.resend-link{color:var(--eye);cursor:pointer;display:none}
+.resend-link.show{display:inline}
+
+/* Trust bar */
+.trust{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.5rem;flex-wrap:wrap}
+.trust-item{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:4px}
+
+/* Progress */
+.progress-bar{height:3px;background:var(--border2);border-radius:2px;margin-bottom:2rem;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--eye),#a78bfa);border-radius:2px;transition:width 0.4s ease}
+
+/* Recaptcha container */
+#recaptcha-container{margin-bottom:1rem}
+
+/* Country code dropdown */
+.country-select{background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;padding:12px 10px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;outline:none;cursor:pointer;width:100%}
+.country-select:focus{border-color:var(--eye)}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <!-- Logo -->
+  <div class="logo">
+    <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+      <ellipse cx="18" cy="18" rx="17" ry="10" stroke="#00d4ff" stroke-width="1.2"/>
+      <ellipse cx="18" cy="18" rx="10" ry="17" stroke="rgba(0,212,255,0.25)" stroke-width="0.8"/>
+      <circle cx="18" cy="18" r="5" stroke="#00d4ff" stroke-width="1"/>
+      <circle cx="18" cy="18" r="2.5" fill="#00d4ff"/>
+    </svg>
+    <div class="logo-name">APP<span>EYE</span></div>
+  </div>
+  <div class="tagline" id="tagline">One Eye. Every App. Every Page.</div>
+
+  <!-- Language Bar -->
+  <div class="lang-bar" id="langBar"></div>
+
+  <!-- Progress -->
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:33%"></div></div>
+
+  <!-- Steps -->
+  <div class="steps-bar">
+    <div class="step-dot active" id="sd1">1</div>
+    <div class="step-line" id="sl1"></div>
+    <div class="step-dot" id="sd2">2</div>
+    <div class="step-line" id="sl2"></div>
+    <div class="step-dot" id="sd3">3</div>
+  </div>
+
+  <!-- STEP 1: Account Details -->
+  <div id="step1">
+    <div class="form-title" id="t_welcome">Create your account</div>
+    <div class="form-sub" id="t_sub1">14 days free · No credit card · Cancel any time</div>
+    <div id="s1msg" class="msg"></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" id="t_fname">First name</label>
+        <input class="form-input" id="firstName" type="text" placeholder="Snehankit">
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="t_lname">Last name</label>
+        <input class="form-input" id="lastName" type="text" placeholder="Patil">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="t_email">Email address</label>
+      <input class="form-input" id="signupEmail" type="email" placeholder="you@example.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="t_phone">Phone number (for OTP verification)</label>
+      <div class="phone-wrap">
+        <select class="country-select phone-code" id="countryCode"></select>
+        <input class="form-input phone-num" id="phoneNum" type="tel" placeholder="9876543210" maxlength="15">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="t_pass">Password</label>
+      <input class="form-input" id="signupPass" type="password" placeholder="Min 8 characters">
+    </div>
+
+    <!-- Plan selection -->
+    <div class="form-group">
+      <label class="form-label" id="t_plan">Choose your plan</label>
+      <div class="plan-cards">
+        <div class="plan-card" id="plan_starter" onclick="selectPlan('starter')">
+          <div class="plan-radio"><div class="plan-radio-dot"></div></div>
+          <div class="plan-info">
+            <div class="plan-name" id="t_starter">Starter</div>
+            <div class="plan-desc">1 app + 1 website</div>
+          </div>
+          <div class="plan-price" id="price_starter">₹999/mo</div>
+        </div>
+        <div class="plan-card selected" id="plan_pro" onclick="selectPlan('pro')">
+          <div class="plan-radio"><div class="plan-radio-dot"></div></div>
+          <div class="plan-info">
+            <div class="plan-name" id="t_pro">Pro ⚡</div>
+            <div class="plan-desc">5 apps + 5 websites</div>
+          </div>
+          <div class="plan-price" id="price_pro">₹2,499/mo</div>
+        </div>
+        <div class="plan-card" id="plan_enterprise" onclick="selectPlan('enterprise')">
+          <div class="plan-radio"><div class="plan-radio-dot"></div></div>
+          <div class="plan-info">
+            <div class="plan-name" id="t_enterprise">Enterprise</div>
+            <div class="plan-desc">Unlimited + White-label</div>
+          </div>
+          <div class="plan-price" id="price_enterprise">₹9,999/mo</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btn1" onclick="goToOTP()">
+      <span id="btn1text">Send OTP to verify phone →</span>
+    </button>
+    <div class="trust">
+      <div class="trust-item">🔒 Secure</div>
+      <div class="trust-item">✓ Free 14 days</div>
+      <div class="trust-item">❌ No card needed</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: OTP Verification -->
+  <div id="step2" style="display:none">
+    <div class="form-title" id="t_verify">Verify your phone</div>
+    <div class="form-sub" id="t_verifysub">Enter the 6-digit code sent to your phone</div>
+    <div id="s2msg" class="msg"></div>
+    <div id="recaptcha-container"></div>
+    <div class="otp-wrap">
+      <input class="otp-input" id="otp1" maxlength="1" oninput="otpNext(this,'otp2')" onkeydown="otpBack(event,this,'')">
+      <input class="otp-input" id="otp2" maxlength="1" oninput="otpNext(this,'otp3')" onkeydown="otpBack(event,this,'otp1')">
+      <input class="otp-input" id="otp3" maxlength="1" oninput="otpNext(this,'otp4')" onkeydown="otpBack(event,this,'otp2')">
+      <input class="otp-input" id="otp4" maxlength="1" oninput="otpNext(this,'otp5')" onkeydown="otpBack(event,this,'otp3')">
+      <input class="otp-input" id="otp5" maxlength="1" oninput="otpNext(this,'otp6')" onkeydown="otpBack(event,this,'otp4')">
+      <input class="otp-input" id="otp6" maxlength="1" oninput="otpNext(this,'')" onkeydown="otpBack(event,this,'otp5')">
+    </div>
+    <button class="btn-primary" id="btn2" onclick="verifyOTP()">
+      <span id="btn2text">Verify OTP →</span>
+    </button>
+    <div class="resend-timer" id="resendTimer">Resend code in <span id="timerCount">30</span>s</div>
+    <span class="resend-link" id="resendLink" onclick="resendOTP()">Resend OTP</span>
+    <button class="btn-ghost" onclick="backToStep1()">← Change phone number</button>
+  </div>
+
+  <!-- STEP 3: Consent + Payment -->
+  <div id="step3" style="display:none">
+    <div class="form-title" id="t_consent">Almost there!</div>
+    <div class="form-sub" id="t_consentsub">Confirm your agreement to proceed to payment</div>
+    <div id="s3msg" class="msg"></div>
+
+    <!-- Plan summary -->
+    <div style="background:var(--bg3);border:0.5px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--eye)" id="summaryPlan">Pro Plan</div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--green);margin-top:2px">14 days FREE, then monthly</div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text2)" id="summaryPrice">₹2,499/mo</div>
+    </div>
+
+    <!-- Consent boxes -->
+    <div class="consent-box">
+      <div class="consent-title">⚠ REQUIRED — READ BEFORE PROCEEDING</div>
+      <div class="consent-item" onclick="toggleC(1)">
+        <div class="consent-cb" id="cc1"></div>
+        <div class="consent-text"><strong>NO REFUNDS.</strong> I understand all payments are final and non-refundable once my 14-day trial ends. No exceptions. <a href="APPEYE_Terms.html#refund" target="_blank">Read policy</a></div>
+      </div>
+      <div class="consent-item" onclick="toggleC(2)">
+        <div class="consent-cb" id="cc2"></div>
+        <div class="consent-text">My trial <strong>auto-converts</strong> to paid subscription unless I cancel before it ends.</div>
+      </div>
+      <div class="consent-item" onclick="toggleC(3)">
+        <div class="consent-cb" id="cc3"></div>
+        <div class="consent-text">I accept the <a href="APPEYE_Terms.html#terms" target="_blank">Terms of Service</a> and <a href="APPEYE_Terms.html#privacy" target="_blank">Privacy Policy</a>.</div>
+      </div>
+      <div class="consent-item" onclick="toggleC(4)">
+        <div class="consent-cb" id="cc4"></div>
+        <div class="consent-text">No results are guaranteed. APPEYE is a management tool only. I am 18+.</div>
+      </div>
+    </div>
+
+    <!-- Payment method -->
+    <div style="display:flex;gap:8px;margin-bottom:1.25rem">
+      <button id="payStripe" onclick="selectPay('stripe')" style="flex:1;padding:12px;border-radius:8px;background:#635bff;color:white;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;opacity:0.5;transition:all 0.2s">💳 Stripe</button>
+      <button id="payRzp" onclick="selectPay('razorpay')" style="flex:1;padding:12px;border-radius:8px;background:#2d82b7;color:white;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;opacity:0.5;transition:all 0.2s">🇮🇳 Razorpay</button>
+    </div>
+
+    <button class="btn-primary" id="btn3" disabled onclick="handlePayment()">
+      <span id="btn3text">Proceed to payment →</span>
+    </button>
+    <div class="trust" style="margin-top:1rem">
+      <div class="trust-item">🔒 256-bit SSL</div>
+      <div class="trust-item">PCI-DSS</div>
+      <div class="trust-item">Cancel any time</div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDKs -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBvFx_2t5DfV6ixL05zPL8zA5xNagWIWQk",
+  authDomain: "appeye-ef3f5.firebaseapp.com",
+  projectId: "appeye-ef3f5",
+  storageBucket: "appeye-ef3f5.firebasestorage.app",
+  messagingSenderId: "682283697334",
+  appId: "1:682283697334:web:a55475c69305f70e9b9217"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+auth.useDeviceLanguage();
+
+// Make auth available globally
+window._auth = auth;
+window._RecaptchaVerifier = RecaptchaVerifier;
+window._signInWithPhoneNumber = signInWithPhoneNumber;
+window._firebaseReady = true;
+</script>
+
+<script>
+// ═══════════════════════════════════════════════
+// YOUR GOOGLE SHEET ID
+// ═══════════════════════════════════════════════
+const SHEET_ID = '1x5fGi6Ms7RtNeOqX8bH2c9oJC1VOz2_Sj8U-edfNu1Q';
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL'; // Set this after deploying Apps Script
+
+// ═══════════════════════════════════════════════
+// STRIPE + RAZORPAY CONFIG
+// ═══════════════════════════════════════════════
+const STRIPE_LINKS = {
+  starter: 'https://buy.stripe.com/REPLACE_starter',
+  pro:     'https://buy.stripe.com/REPLACE_pro',
+  enterprise: 'https://buy.stripe.com/REPLACE_enterprise',
+};
+const RZP_KEY = 'rzp_test_REPLACE';
+const RZP_PLANS = {
+  starter: 'plan_REPLACE_starter',
+  pro:     'plan_REPLACE_pro',
+  enterprise: 'plan_REPLACE_enterprise',
+};
+
+// ═══════════════════════════════════════════════
+// LANGUAGES — 50+ world languages + all Indian languages
+// ═══════════════════════════════════════════════
+const LANGS = {
+  en:{name:'EN',flag:'🇬🇧',
+    tagline:'One Eye. Every App. Every Page.',
+    welcome:'Create your account',sub1:'14 days free · No credit card · Cancel any time',
+    fname:'First name',lname:'Last name',email:'Email address',
+    phone:'Phone number (OTP verification)',pass:'Password',plan:'Choose your plan',
+    starter:'Starter',pro:'Pro ⚡',enterprise:'Enterprise',
+    send:'Send OTP to verify phone →',
+    verify:'Verify your phone',verifysub:'Enter the 6-digit OTP sent to your phone',
+    verifyBtn:'Verify OTP →',
+    consent:'Almost there!',consentsub:'Confirm your agreement to proceed',
+    payBtn:'Proceed to payment →',
+    resend:'Resend code in',resendBtn:'Resend OTP',
+    back:'← Change phone number',
+  },
+  hi:{name:'HI',flag:'🇮🇳',
+    tagline:'एक नज़र। हर ऐप। हर पेज।',
+    welcome:'अपना खाता बनाएं',sub1:'14 दिन मुफ़्त · कोई क्रेडिट कार्ड नहीं · कभी भी रद्द करें',
+    fname:'पहला नाम',lname:'अंतिम नाम',email:'ईमेल पता',
+    phone:'फ़ोन नंबर (OTP सत्यापन)',pass:'पासवर्ड',plan:'अपनी योजना चुनें',
+    starter:'स्टार्टर',pro:'प्रो ⚡',enterprise:'एंटरप्राइज़',
+    send:'फ़ोन सत्यापित करने के लिए OTP भेजें →',
+    verify:'अपना फ़ोन सत्यापित करें',verifysub:'आपके फ़ोन पर भेजा गया 6-अंकीय OTP दर्ज करें',
+    verifyBtn:'OTP सत्यापित करें →',
+    consent:'लगभग हो गया!',consentsub:'भुगतान के लिए अपनी सहमति की पुष्टि करें',
+    payBtn:'भुगतान के लिए आगे बढ़ें →',
+    resend:'कोड दोबारा भेजें',resendBtn:'OTP दोबारा भेजें',
+    back:'← फ़ोन नंबर बदलें',
+  },
+  ta:{name:'TA',flag:'🇮🇳',
+    tagline:'ஒரு கண். ஒவ்வொரு ஆப்பும். ஒவ்வொரு பக்கமும்.',
+    welcome:'உங்கள் கணக்கை உருவாக்கவும்',sub1:'14 நாட்கள் இலவசம் · கார்டு தேவையில்லை',
+    fname:'முதல் பெயர்',lname:'கடைசி பெயர்',email:'மின்னஞ்சல்',
+    phone:'தொலைபேசி எண் (OTP சரிபார்ப்பு)',pass:'கடவுச்சொல்',plan:'திட்டம் தேர்வு செய்யுங்கள்',
+    starter:'ஸ்டார்டர்',pro:'ப்ரோ ⚡',enterprise:'என்டர்பிரைஸ்',
+    send:'OTP அனுப்பு →',verify:'உங்கள் தொலைபேசியை சரிபார்க்கவும்',
+    verifysub:'உங்கள் தொலைபேசிக்கு அனுப்பப்பட்ட 6-இலக்க OTP ஐ உள்ளிடவும்',
+    verifyBtn:'OTP சரிபார்க்கவும் →',
+    consent:'கிட்டத்தட்ட முடிந்தது!',consentsub:'தொடர உங்கள் ஒப்புதலை உறுதிப்படுத்தவும்',
+    payBtn:'கட்டணத்திற்கு தொடரவும் →',
+    resend:'குறியீட்டை மீண்டும் அனுப்பு',resendBtn:'OTP மீண்டும் அனுப்பு',
+    back:'← தொலைபேசி எண்ணை மாற்றவும்',
+  },
+  te:{name:'TE',flag:'🇮🇳',
+    tagline:'ఒక కన్ను. ప్రతి యాప్. ప్రతి పేజీ.',
+    welcome:'మీ ఖాతాను సృష్టించండి',sub1:'14 రోజులు ఉచితం · కార్డు అవసరం లేదు',
+    fname:'మొదటి పేరు',lname:'చివరి పేరు',email:'ఇమెయిల్',
+    phone:'ఫోన్ నంబర్ (OTP వెరిఫికేషన్)',pass:'పాస్వర్డ్',plan:'మీ ప్లాన్ ఎంచుకోండి',
+    starter:'స్టార్టర్',pro:'ప్రో ⚡',enterprise:'ఎంటర్‌ప్రైజ్',
+    send:'OTP పంపు →',verify:'మీ ఫోన్‌ను ధృవీకరించండి',
+    verifysub:'మీ ఫోన్‌కు పంపిన 6-అంకెల OTP నమోదు చేయండి',
+    verifyBtn:'OTP ధృవీకరించు →',
+    consent:'దాదాపు అయింది!',consentsub:'చెల్లింపుకు కొనసాగడానికి మీ అంగీకారాన్ని నిర్ధారించండి',
+    payBtn:'చెల్లింపుకు కొనసాగండి →',
+    resend:'కోడ్ మళ్ళీ పంపు',resendBtn:'OTP మళ్ళీ పంపు',
+    back:'← ఫోన్ నంబర్ మార్చండి',
+  },
+  kn:{name:'KN',flag:'🇮🇳',
+    tagline:'ಒಂದು ಕಣ್ಣು. ಪ್ರತಿ ಆಪ್. ಪ್ರತಿ ಪುಟ.',
+    welcome:'ನಿಮ್ಮ ಖಾತೆ ರಚಿಸಿ',sub1:'14 ದಿನ ಉಚಿತ · ಕಾರ್ಡ್ ಅಗತ್ಯವಿಲ್ಲ',
+    fname:'ಮೊದಲ ಹೆಸರು',lname:'ಕೊನೆಯ ಹೆಸರು',email:'ಇಮೇಲ್',
+    phone:'ಫೋನ್ ಸಂಖ್ಯೆ (OTP ಪರಿಶೀಲನೆ)',pass:'ಪಾಸ್‌ವರ್ಡ್',plan:'ನಿಮ್ಮ ಯೋಜನೆ ಆಯ್ಕೆಮಾಡಿ',
+    starter:'ಸ್ಟಾರ್ಟರ್',pro:'ಪ್ರೊ ⚡',enterprise:'ಎಂಟರ್‌ಪ್ರೈಸ್',
+    send:'OTP ಕಳುಹಿಸಿ →',verify:'ನಿಮ್ಮ ಫೋನ್ ಪರಿಶೀಲಿಸಿ',
+    verifysub:'ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಕಳುಹಿಸಿದ 6-ಅಂಕಿ OTP ನಮೂದಿಸಿ',
+    verifyBtn:'OTP ಪರಿಶೀಲಿಸಿ →',
+    consent:'ಬಹುತೇಕ ಮುಗಿದಿದೆ!',consentsub:'ಮುಂದುವರಿಯಲು ನಿಮ್ಮ ಒಪ್ಪಿಗೆ ದೃಢೀಕರಿಸಿ',
+    payBtn:'ಪಾವತಿಗೆ ಮುಂದುವರಿಯಿರಿ →',
+    resend:'ಕೋಡ್ ಮರುಕಳುಹಿಸಿ',resendBtn:'OTP ಮರುಕಳುಹಿಸಿ',
+    back:'← ಫೋನ್ ಸಂಖ್ಯೆ ಬದಲಾಯಿಸಿ',
+  },
+  bn:{name:'BN',flag:'🇮🇳',
+    tagline:'এক চোখ। প্রতিটি অ্যাপ। প্রতিটি পেজ।',
+    welcome:'আপনার অ্যাকাউন্ট তৈরি করুন',sub1:'১৪ দিন বিনামূল্যে · কার্ডের প্রয়োজন নেই',
+    fname:'প্রথম নাম',lname:'শেষ নাম',email:'ইমেইল',
+    phone:'ফোন নম্বর (OTP যাচাইকরণ)',pass:'পাসওয়ার্ড',plan:'আপনার প্ল্যান বেছে নিন',
+    starter:'স্টার্টার',pro:'প্রো ⚡',enterprise:'এন্টারপ্রাইজ',
+    send:'OTP পাঠান →',verify:'আপনার ফোন যাচাই করুন',
+    verifysub:'আপনার ফোনে পাঠানো ৬-সংখ্যার OTP লিখুন',
+    verifyBtn:'OTP যাচাই করুন →',
+    consent:'প্রায় শেষ!',consentsub:'অর্থপ্রদানের জন্য আপনার সম্মতি নিশ্চিত করুন',
+    payBtn:'পেমেন্টে এগিয়ে যান →',
+    resend:'কোড আবার পাঠান',resendBtn:'OTP আবার পাঠান',
+    back:'← ফোন নম্বর পরিবর্তন করুন',
+  },
+  mr:{name:'MR',flag:'🇮🇳',
+    tagline:'एक डोळा. प्रत्येक अॅप. प्रत्येक पेज.',
+    welcome:'तुमचे खाते तयार करा',sub1:'१४ दिवस मोफत · कार्ड आवश्यक नाही',
+    fname:'पहिले नाव',lname:'आडनाव',email:'ईमेल',
+    phone:'फोन नंबर (OTP सत्यापन)',pass:'पासवर्ड',plan:'तुमची योजना निवडा',
+    starter:'स्टार्टर',pro:'प्रो ⚡',enterprise:'एंटरप्राइझ',
+    send:'OTP पाठवा →',verify:'तुमचा फोन सत्यापित करा',
+    verifysub:'तुमच्या फोनवर पाठवलेला 6-अंकी OTP टाका',
+    verifyBtn:'OTP सत्यापित करा →',
+    consent:'जवळजवळ झाले!',consentsub:'पुढे जाण्यासाठी संमती द्या',
+    payBtn:'पेमेंटकडे जा →',
+    resend:'कोड पुन्हा पाठवा',resendBtn:'OTP पुन्हा पाठवा',
+    back:'← फोन नंबर बदला',
+  },
+  gu:{name:'GU',flag:'🇮🇳',
+    tagline:'એક આંખ. દરેક એપ. દરેક પેજ.',
+    welcome:'તમારું ખાતું બનાવો',sub1:'૧૪ દિવસ મફત · કાર્ડ જરૂરી નથી',
+    fname:'પ્રથમ નામ',lname:'અટક',email:'ઈમેઈલ',
+    phone:'ફોન નંબર (OTP ચકાસણી)',pass:'પાસવર્ડ',plan:'તમારી યોજના પસંદ કરો',
+    starter:'સ્ટાર્ટર',pro:'પ્રો ⚡',enterprise:'એન્ટરપ્રાઇઝ',
+    send:'OTP મોકલો →',verify:'તમારો ફોન ચકાસો',
+    verifysub:'તમારા ફોન પર મોકલેલો 6-અંકનો OTP દાખલ કરો',
+    verifyBtn:'OTP ચકાસો →',
+    consent:'લગભગ થઈ ગયું!',consentsub:'ચુકવણી માટે સંમતિ આપો',
+    payBtn:'ચુકવણી તરફ આગળ વધો →',
+    resend:'કોડ ફરી મોકલો',resendBtn:'OTP ફરી મોકલો',
+    back:'← ફોન નંબર બદલો',
+  },
+  pa:{name:'PA',flag:'🇮🇳',
+    tagline:'ਇੱਕ ਅੱਖ। ਹਰ ਐਪ। ਹਰ ਪੇਜ।',
+    welcome:'ਆਪਣਾ ਖਾਤਾ ਬਣਾਓ',sub1:'14 ਦਿਨ ਮੁਫ਼ਤ · ਕਾਰਡ ਦੀ ਲੋੜ ਨਹੀਂ',
+    fname:'ਪਹਿਲਾ ਨਾਮ',lname:'ਆਖਰੀ ਨਾਮ',email:'ਈਮੇਲ',
+    phone:'ਫ਼ੋਨ ਨੰਬਰ (OTP ਤਸਦੀਕ)',pass:'ਪਾਸਵਰਡ',plan:'ਆਪਣੀ ਯੋਜਨਾ ਚੁਣੋ',
+    starter:'ਸਟਾਰਟਰ',pro:'ਪ੍ਰੋ ⚡',enterprise:'ਐਂਟਰਪ੍ਰਾਈਜ਼',
+    send:'OTP ਭੇਜੋ →',verify:'ਆਪਣਾ ਫ਼ੋਨ ਤਸਦੀਕ ਕਰੋ',
+    verifysub:'ਫ਼ੋਨ ਤੇ ਭੇਜਿਆ 6-ਅੰਕ OTP ਦਾਖਲ ਕਰੋ',
+    verifyBtn:'OTP ਤਸਦੀਕ ਕਰੋ →',
+    consent:'ਲਗਭਗ ਹੋ ਗਿਆ!',consentsub:'ਭੁਗਤਾਨ ਲਈ ਅੱਗੇ ਵਧਣ ਲਈ ਸਹਿਮਤੀ ਦਿਓ',
+    payBtn:'ਭੁਗਤਾਨ ਵੱਲ ਅੱਗੇ ਵਧੋ →',
+    resend:'ਕੋਡ ਦੁਬਾਰਾ ਭੇਜੋ',resendBtn:'OTP ਦੁਬਾਰਾ ਭੇਜੋ',
+    back:'← ਫ਼ੋਨ ਨੰਬਰ ਬਦਲੋ',
+  },
+  ml:{name:'ML',flag:'🇮🇳',
+    tagline:'ഒരു കണ്ണ്. എല്ലാ ആപ്പും. എല്ലാ പേജും.',
+    welcome:'നിങ്ങളുടെ അക്കൗണ്ട് ഉണ്ടാക്കുക',sub1:'14 ദിവസം സൗജന്യം · കാർഡ് ആവശ്യമില്ല',
+    fname:'പേരിൻ്റെ ആദ്യഭാഗം',lname:'കുടുംബപ്പേര്',email:'ഇമെയിൽ',
+    phone:'ഫോൺ നമ്പർ (OTP പരിശോധന)',pass:'പാസ്‌വേഡ്',plan:'നിങ്ങളുടെ പ്ലാൻ തിരഞ്ഞെടുക്കുക',
+    starter:'സ്റ്റാർട്ടർ',pro:'പ്രോ ⚡',enterprise:'എന്റർപ്രൈസ്',
+    send:'OTP അയക്കുക →',verify:'നിങ്ങളുടെ ഫോൺ പരിശോധിക്കുക',
+    verifysub:'ഫോണിലേക്ക് അയച്ച 6-അക്ക OTP നൽകുക',
+    verifyBtn:'OTP പരിശോധിക്കുക →',
+    consent:'ഏതാണ്ട് തയ്യാർ!',consentsub:'പേയ്‌മെന്റിലേക്ക് തുടരാൻ സമ്മതം നൽകുക',
+    payBtn:'പേയ്‌മെന്റിലേക്ക് →',
+    resend:'കോഡ് വീണ്ടും അയക്കൂ',resendBtn:'OTP വീണ്ടും അയക്കൂ',
+    back:'← ഫോൺ നമ്പർ മാറ്റുക',
+  },
+  ur:{name:'UR',flag:'🇵🇰',
+    tagline:'ایک آنکھ۔ ہر ایپ۔ ہر صفحہ۔',
+    welcome:'اپنا اکاؤنٹ بنائیں',sub1:'14 دن مفت · کوئی کارڈ نہیں',
+    fname:'پہلا نام',lname:'آخری نام',email:'ای میل',
+    phone:'فون نمبر (OTP تصدیق)',pass:'پاس ورڈ',plan:'اپنا پلان چنیں',
+    starter:'اسٹارٹر',pro:'پرو ⚡',enterprise:'انٹرپرائز',
+    send:'OTP بھیجیں →',verify:'اپنا فون تصدیق کریں',
+    verifysub:'اپنے فون پر بھیجا گیا 6 ہندسوں کا OTP درج کریں',
+    verifyBtn:'OTP تصدیق کریں →',
+    consent:'تقریباً ہو گیا!',consentsub:'ادائیگی کے لیے اپنی رضامندی کی تصدیق کریں',
+    payBtn:'ادائیگی کی طرف آگے بڑھیں →',
+    resend:'کوڈ دوبارہ بھیجیں',resendBtn:'OTP دوبارہ بھیجیں',
+    back:'← فون نمبر تبدیل کریں',
+  },
+  es:{name:'ES',flag:'🇪🇸',
+    tagline:'Un ojo. Cada app. Cada página.',
+    welcome:'Crea tu cuenta',sub1:'14 días gratis · Sin tarjeta · Cancela cuando quieras',
+    fname:'Nombre',lname:'Apellido',email:'Correo electrónico',
+    phone:'Teléfono (verificación OTP)',pass:'Contraseña',plan:'Elige tu plan',
+    starter:'Básico',pro:'Pro ⚡',enterprise:'Empresa',
+    send:'Enviar OTP →',verify:'Verifica tu teléfono',
+    verifysub:'Ingresa el código OTP de 6 dígitos enviado a tu teléfono',
+    verifyBtn:'Verificar OTP →',
+    consent:'¡Casi listo!',consentsub:'Confirma tu acuerdo para proceder al pago',
+    payBtn:'Proceder al pago →',
+    resend:'Reenviar código en',resendBtn:'Reenviar OTP',
+    back:'← Cambiar número',
+  },
+  fr:{name:'FR',flag:'🇫🇷',
+    tagline:"Un œil. Chaque app. Chaque page.",
+    welcome:'Créez votre compte',sub1:'14 jours gratuits · Sans carte · Annulez à tout moment',
+    fname:'Prénom',lname:'Nom',email:'Adresse e-mail',
+    phone:'Téléphone (vérification OTP)',pass:'Mot de passe',plan:'Choisissez votre plan',
+    starter:'Débutant',pro:'Pro ⚡',enterprise:'Entreprise',
+    send:'Envoyer OTP →',verify:'Vérifiez votre téléphone',
+    verifysub:'Entrez le code OTP à 6 chiffres envoyé sur votre téléphone',
+    verifyBtn:'Vérifier OTP →',
+    consent:'Presque terminé!',consentsub:'Confirmez votre accord pour procéder au paiement',
+    payBtn:'Procéder au paiement →',
+    resend:'Renvoyer le code dans',resendBtn:'Renvoyer OTP',
+    back:'← Changer de numéro',
+  },
+  ar:{name:'AR',flag:'🇸🇦',dir:'rtl',
+    tagline:'عين واحدة. كل تطبيق. كل صفحة.',
+    welcome:'أنشئ حسابك',sub1:'14 يوماً مجاناً · بدون بطاقة',
+    fname:'الاسم الأول',lname:'اسم العائلة',email:'البريد الإلكتروني',
+    phone:'رقم الهاتف (التحقق بـ OTP)',pass:'كلمة المرور',plan:'اختر خطتك',
+    starter:'مبتدئ',pro:'محترف ⚡',enterprise:'مؤسسة',
+    send:'إرسال OTP →',verify:'تحقق من هاتفك',
+    verifysub:'أدخل رمز OTP المكون من 6 أرقام المرسل إلى هاتفك',
+    verifyBtn:'تحقق من OTP →',
+    consent:'تقريباً انتهينا!',consentsub:'أكد موافقتك للمتابعة إلى الدفع',
+    payBtn:'المتابعة إلى الدفع →',
+    resend:'إعادة إرسال الرمز',resendBtn:'إعادة إرسال OTP',
+    back:'← تغيير رقم الهاتف',
+  },
+  zh:{name:'中文',flag:'🇨🇳',
+    tagline:'一只眼。每个应用。每个页面。',
+    welcome:'创建您的账户',sub1:'14天免费 · 无需信用卡 · 随时取消',
+    fname:'名字',lname:'姓氏',email:'电子邮件',
+    phone:'手机号码（OTP验证）',pass:'密码',plan:'选择您的套餐',
+    starter:'入门版',pro:'专业版 ⚡',enterprise:'企业版',
+    send:'发送OTP →',verify:'验证您的手机',
+    verifysub:'输入发送到您手机的6位OTP码',
+    verifyBtn:'验证OTP →',
+    consent:'快完成了！',consentsub:'确认您的协议以继续付款',
+    payBtn:'前往付款 →',
+    resend:'重新发送验证码',resendBtn:'重新发送OTP',
+    back:'← 更改手机号',
+  },
+  ja:{name:'日本語',flag:'🇯🇵',
+    tagline:'ひとつの目。すべてのアプリ。すべてのページ。',
+    welcome:'アカウントを作成する',sub1:'14日間無料 · カード不要 · いつでもキャンセル',
+    fname:'名',lname:'姓',email:'メールアドレス',
+    phone:'電話番号（OTP認証）',pass:'パスワード',plan:'プランを選択',
+    starter:'スターター',pro:'プロ ⚡',enterprise:'エンタープライズ',
+    send:'OTPを送信 →',verify:'電話番号を確認',
+    verifysub:'電話に送られた6桁のOTPを入力してください',
+    verifyBtn:'OTPを確認 →',
+    consent:'もう少しです！',consentsub:'支払いに進むための同意を確認してください',
+    payBtn:'支払いに進む →',
+    resend:'コードを再送信',resendBtn:'OTPを再送信',
+    back:'← 電話番号を変更',
+  },
+  ko:{name:'한국어',flag:'🇰🇷',
+    tagline:'하나의 눈. 모든 앱. 모든 페이지.',
+    welcome:'계정 만들기',sub1:'14일 무료 · 카드 불필요 · 언제든지 취소',
+    fname:'이름',lname:'성',email:'이메일 주소',
+    phone:'전화번호 (OTP 인증)',pass:'비밀번호',plan:'플랜 선택',
+    starter:'스타터',pro:'프로 ⚡',enterprise:'엔터프라이즈',
+    send:'OTP 전송 →',verify:'전화번호 인증',
+    verifysub:'전화로 전송된 6자리 OTP를 입력하세요',
+    verifyBtn:'OTP 인증 →',
+    consent:'거의 다 됐어요!',consentsub:'결제를 진행하려면 동의를 확인하세요',
+    payBtn:'결제하러 가기 →',
+    resend:'코드 재전송',resendBtn:'OTP 재전송',
+    back:'← 전화번호 변경',
+  },
+  de:{name:'DE',flag:'🇩🇪',
+    tagline:'Ein Auge. Jede App. Jede Seite.',
+    welcome:'Konto erstellen',sub1:'14 Tage kostenlos · Keine Karte · Jederzeit kündigen',
+    fname:'Vorname',lname:'Nachname',email:'E-Mail-Adresse',
+    phone:'Telefonnummer (OTP-Bestätigung)',pass:'Passwort',plan:'Plan wählen',
+    starter:'Starter',pro:'Pro ⚡',enterprise:'Enterprise',
+    send:'OTP senden →',verify:'Telefon bestätigen',
+    verifysub:'Gib den 6-stelligen OTP-Code ein, der an dein Telefon gesendet wurde',
+    verifyBtn:'OTP bestätigen →',
+    consent:'Fast fertig!',consentsub:'Bestätige deine Zustimmung für die Zahlung',
+    payBtn:'Zur Zahlung →',
+    resend:'Code erneut senden',resendBtn:'OTP erneut senden',
+    back:'← Nummer ändern',
+  },
+  pt:{name:'PT',flag:'🇧🇷',
+    tagline:'Um olho. Cada app. Cada página.',
+    welcome:'Criar sua conta',sub1:'14 dias grátis · Sem cartão · Cancele quando quiser',
+    fname:'Nome',lname:'Sobrenome',email:'Email',
+    phone:'Telefone (verificação OTP)',pass:'Senha',plan:'Escolha seu plano',
+    starter:'Básico',pro:'Pro ⚡',enterprise:'Enterprise',
+    send:'Enviar OTP →',verify:'Verifique seu telefone',
+    verifysub:'Digite o código OTP de 6 dígitos enviado para o seu telefone',
+    verifyBtn:'Verificar OTP →',
+    consent:'Quase pronto!',consentsub:'Confirme seu acordo para prosseguir com o pagamento',
+    payBtn:'Prosseguir para pagamento →',
+    resend:'Reenviar código',resendBtn:'Reenviar OTP',
+    back:'← Mudar número',
+  },
+  ru:{name:'RU',flag:'🇷🇺',
+    tagline:'Один глаз. Каждое приложение. Каждая страница.',
+    welcome:'Создать аккаунт',sub1:'14 дней бесплатно · Без карты · Отмена в любое время',
+    fname:'Имя',lname:'Фамилия',email:'Электронная почта',
+    phone:'Номер телефона (OTP верификация)',pass:'Пароль',plan:'Выберите план',
+    starter:'Стартер',pro:'Про ⚡',enterprise:'Корпоративный',
+    send:'Отправить OTP →',verify:'Подтвердите телефон',
+    verifysub:'Введите 6-значный OTP-код, отправленный на ваш телефон',
+    verifyBtn:'Подтвердить OTP →',
+    consent:'Почти готово!',consentsub:'Подтвердите согласие для перехода к оплате',
+    payBtn:'Перейти к оплате →',
+    resend:'Отправить код повторно',resendBtn:'Повторно отправить OTP',
+    back:'← Изменить номер',
+  },
+};
+
+// ═══════════════════════════════════════════════
+// COUNTRY CODES
+// ═══════════════════════════════════════════════
+const COUNTRY_CODES = [
+  {code:'+91',name:'🇮🇳 India (+91)'},
+  {code:'+1',name:'🇨🇦 Canada (+1)'},
+  {code:'+1',name:'🇺🇸 USA (+1)'},
+  {code:'+44',name:'🇬🇧 UK (+44)'},
+  {code:'+61',name:'🇦🇺 Australia (+61)'},
+  {code:'+971',name:'🇦🇪 UAE (+971)'},
+  {code:'+65',name:'🇸🇬 Singapore (+65)'},
+  {code:'+60',name:'🇲🇾 Malaysia (+60)'},
+  {code:'+49',name:'🇩🇪 Germany (+49)'},
+  {code:'+33',name:'🇫🇷 France (+33)'},
+  {code:'+34',name:'🇪🇸 Spain (+34)'},
+  {code:'+55',name:'🇧🇷 Brazil (+55)'},
+  {code:'+7',name:'🇷🇺 Russia (+7)'},
+  {code:'+81',name:'🇯🇵 Japan (+81)'},
+  {code:'+82',name:'🇰🇷 Korea (+82)'},
+  {code:'+86',name:'🇨🇳 China (+86)'},
+  {code:'+966',name:'🇸🇦 Saudi Arabia (+966)'},
+  {code:'+92',name:'🇵🇰 Pakistan (+92)'},
+  {code:'+880',name:'🇧🇩 Bangladesh (+880)'},
+  {code:'+94',name:'🇱🇰 Sri Lanka (+94)'},
+  {code:'+977',name:'🇳🇵 Nepal (+977)'},
+  {code:'+975',name:'🇧🇹 Bhutan (+975)'},
+  {code:'+63',name:'🇵🇭 Philippines (+63)'},
+  {code:'+62',name:'🇮🇩 Indonesia (+62)'},
+  {code:'+66',name:'🇹🇭 Thailand (+66)'},
+  {code:'+84',name:'🇻🇳 Vietnam (+84)'},
+  {code:'+27',name:'🇿🇦 South Africa (+27)'},
+  {code:'+254',name:'🇰🇪 Kenya (+254)'},
+  {code:'+234',name:'🇳🇬 Nigeria (+234)'},
+  {code:'+20',name:'🇪🇬 Egypt (+20)'},
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let currentLang = 'en';
+let selectedPlanVal = 'pro';
+let selectedPayMethod = 'stripe';
+let confirmationResult = null;
+let consents = {1:false,2:false,3:false,4:false};
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+window.addEventListener('load', () => {
+  buildLangBar();
+  buildCountryCodes();
+  detectLanguage();
+  // Check if plan was passed from landing page
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('plan')) { selectPlan(params.get('plan')); }
+});
+
+function buildLangBar() {
+  const bar = document.getElementById('langBar');
+  const priority = ['en','hi','ta','te','kn','bn','mr','gu','pa','ml','ur','es','fr','ar','zh','ja','ko','de','pt','ru'];
+  bar.innerHTML = priority.map(l => {
+    const ld = LANGS[l];
+    return `<button class="lang-btn ${l==='en'?'active':''}" onclick="setLang('${l}')">${ld.flag} ${ld.name}</button>`;
+  }).join('');
+}
+
+function buildCountryCodes() {
+  const sel = document.getElementById('countryCode');
+  sel.innerHTML = COUNTRY_CODES.map(c => `<option value="${c.code}">${c.name}</option>`).join('');
+}
+
+function detectLanguage() {
+  const bl = (navigator.language || 'en').split('-')[0].toLowerCase();
+  const map = {hi:'hi',ta:'ta',te:'te',kn:'kn',bn:'bn',mr:'mr',gu:'gu',pa:'pa',ml:'ml',ur:'ur',es:'es',fr:'fr',ar:'ar',zh:'zh',ja:'ja',ko:'ko',de:'de',pt:'pt',ru:'ru'};
+  if(map[bl] && LANGS[map[bl]]) setLang(map[bl]);
+  else setLang('en');
+  // Auto-select country code
+  try {
+    fetch('https://ipapi.co/json/',{signal:AbortSignal.timeout(2000)})
+      .then(r=>r.json()).then(d=>{
+        const codeMap = {'IN':'+91','CA':'+1','US':'+1','GB':'+44','AU':'+61','AE':'+971','SG':'+65','DE':'+49','FR':'+33','JP':'+81','KR':'+82','CN':'+86','BR':'+55','RU':'+7'};
+        const code = codeMap[d.country_code] || '+1';
+        const sel = document.getElementById('countryCode');
+        for(let i=0;i<sel.options.length;i++){
+          if(sel.options[i].value===code){sel.selectedIndex=i;break;}
+        }
+      }).catch(()=>{});
+  } catch(e){}
+}
+
+function setLang(l) {
+  if(!LANGS[l]) return;
+  currentLang = l;
+  const ld = LANGS[l];
+  document.documentElement.dir = ld.dir || 'ltr';
+  // Update all text
+  setText('tagline', ld.tagline);
+  setText('t_welcome', ld.welcome); setText('t_sub1', ld.sub1);
+  setText('t_fname', ld.fname); setText('t_lname', ld.lname);
+  setText('t_email', ld.email); setText('t_phone', ld.phone);
+  setText('t_pass', ld.pass); setText('t_plan', ld.plan);
+  setText('t_starter', ld.starter); setText('t_pro', ld.pro); setText('t_enterprise', ld.enterprise);
+  setText('btn1text', ld.send);
+  setText('t_verify', ld.verify); setText('t_verifysub', ld.verifysub);
+  setText('btn2text', ld.verifyBtn);
+  setText('t_consent', ld.consent); setText('t_consentsub', ld.consentsub);
+  setText('btn3text', ld.payBtn);
+  // Update lang buttons
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.includes(ld.name)));
+}
+
+function setText(id, text) {
+  const el = document.getElementById(id);
+  if(el) el.textContent = text;
+}
+
+// ═══════════════════════════════════════════════
+// PLAN SELECTION
+// ═══════════════════════════════════════════════
+const PLAN_PRICES = {
+  INR:{starter:'₹999/mo',pro:'₹2,499/mo',enterprise:'₹9,999/mo'},
+  USD:{starter:'$12/mo',pro:'$29/mo',enterprise:'$119/mo'},
+  CAD:{starter:'$16/mo',pro:'$40/mo',enterprise:'$162/mo'},
+};
+
+function selectPlan(p) {
+  selectedPlanVal = p;
+  ['starter','pro','enterprise'].forEach(x => {
+    document.getElementById('plan_'+x).classList.toggle('selected', x===p);
+  });
+  updateSummary();
+}
+
+function updateSummary() {
+  const names = {starter:'Starter Plan',pro:'Pro Plan ⚡',enterprise:'Enterprise Plan'};
+  setText('summaryPlan', names[selectedPlanVal]);
+  setText('summaryPrice', PLAN_PRICES.INR[selectedPlanVal]);
+  setText('price_starter', PLAN_PRICES.INR.starter);
+  setText('price_pro', PLAN_PRICES.INR.pro);
+  setText('price_enterprise', PLAN_PRICES.INR.enterprise);
+}
+
+// ═══════════════════════════════════════════════
+// STEP 1 → OTP
+// ═══════════════════════════════════════════════
+async function goToOTP() {
+  const msg = document.getElementById('s1msg');
+  const first = document.getElementById('firstName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const phone = document.getElementById('phoneNum').value.trim();
+  const pass  = document.getElementById('signupPass').value;
+  const code  = document.getElementById('countryCode').value;
+
+  if(!first){showMsg(msg,'error','Please enter your first name.');return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showMsg(msg,'error','Please enter a valid email address.');return;}
+  if(!phone||phone.length<7){showMsg(msg,'error','Please enter a valid phone number.');return;}
+  if(pass.length<8){showMsg(msg,'error','Password must be at least 8 characters.');return;}
+
+  const fullPhone = code + phone.replace(/\D/g,'');
+  const btn = document.getElementById('btn1');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    // Wait for Firebase
+    let tries = 0;
+    while(!window._firebaseReady && tries < 20){await sleep(200);tries++;}
+
+    if(!window._firebaseReady){
+      showMsg(msg,'error','Firebase not loaded. Please refresh and try again.');
+      btn.disabled=false; btn.innerHTML=LANGS[currentLang].send; return;
+    }
+
+    // Setup recaptcha
+    if(!window._recaptchaVerifier){
+      window._recaptchaVerifier = new window._RecaptchaVerifier(window._auth, 'recaptcha-container', {size:'invisible'});
+    }
+
+    confirmationResult = await window._signInWithPhoneNumber(window._auth, fullPhone, window._recaptchaVerifier);
+    showStep(2);
+    startResendTimer();
+    showMsg(document.getElementById('s2msg'),'success',`OTP sent to ${code} ${phone}`);
+  } catch(e) {
+    console.error(e);
+    showMsg(msg,'error','Could not send OTP. Check your phone number and try again. Error: '+e.message);
+    btn.disabled=false;
+    btn.innerHTML=`<span id="btn1text">${LANGS[currentLang].send}</span>`;
+  }
+}
+
+// ═══════════════════════════════════════════════
+// OTP VERIFICATION
+// ═══════════════════════════════════════════════
+async function verifyOTP() {
+  const otp = ['otp1','otp2','otp3','otp4','otp5','otp6'].map(id=>document.getElementById(id).value).join('');
+  const msg = document.getElementById('s2msg');
+
+  if(otp.length!==6){showMsg(msg,'error','Please enter all 6 digits.');return;}
+  if(!confirmationResult){showMsg(msg,'error','Please request OTP first.');return;}
+
+  const btn = document.getElementById('btn2');
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div>';
+
+  try {
+    await confirmationResult.confirm(otp);
+    showMsg(msg,'success','✓ Phone verified successfully!');
+    setTimeout(()=>showStep(3), 800);
+  } catch(e) {
+    showMsg(msg,'error','Invalid OTP. Please check and try again.');
+    btn.disabled=false;
+    btn.innerHTML=`<span id="btn2text">${LANGS[currentLang].verifyBtn}</span>`;
+  }
+}
+
+// OTP input helpers
+function otpNext(el, nextId) {
+  el.classList.toggle('filled', el.value!=='');
+  if(el.value && nextId) document.getElementById(nextId)?.focus();
+  const otp = ['otp1','otp2','otp3','otp4','otp5','otp6'].map(id=>document.getElementById(id).value).join('');
+  if(otp.length===6) verifyOTP();
+}
+function otpBack(e, el, prevId) {
+  if(e.key==='Backspace'&&!el.value&&prevId) document.getElementById(prevId)?.focus();
+}
+
+// Resend timer
+let timerInterval;
+function startResendTimer() {
+  let t = 30;
+  document.getElementById('resendTimer').style.display='block';
+  document.getElementById('resendLink').classList.remove('show');
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    t--;
+    const el=document.getElementById('timerCount');
+    if(el) el.textContent=t;
+    if(t<=0){
+      clearInterval(timerInterval);
+      document.getElementById('resendTimer').style.display='none';
+      document.getElementById('resendLink').classList.add('show');
+    }
+  },1000);
+}
+
+async function resendOTP() {
+  document.getElementById('resendLink').classList.remove('show');
+  window._recaptchaVerifier = null;
+  await goToOTP();
+}
+
+// ═══════════════════════════════════════════════
+// CONSENT
+// ═══════════════════════════════════════════════
+function toggleC(n) {
+  consents[n] = !consents[n];
+  const cb = document.getElementById('cc'+n);
+  cb.classList.toggle('checked', consents[n]);
+  cb.innerHTML = consents[n]?'<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#04050a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>':'';
+  const allDone = Object.values(consents).every(Boolean);
+  const btn = document.getElementById('btn3');
+  btn.disabled = !allDone;
+  document.getElementById('payStripe').style.opacity = allDone?'1':'0.5';
+  document.getElementById('payRzp').style.opacity = allDone?'1':'0.5';
+}
+
+function selectPay(method) {
+  selectedPayMethod = method;
+  document.getElementById('payStripe').style.transform = method==='stripe'?'scale(1.02)':'scale(1)';
+  document.getElementById('payRzp').style.transform = method==='razorpay'?'scale(1.02)':'scale(1)';
+}
+
+// ═══════════════════════════════════════════════
+// PAYMENT + SAVE TO SHEET
+// ═══════════════════════════════════════════════
+async function handlePayment() {
+  const allDone = Object.values(consents).every(Boolean);
+  if(!allDone){showMsg(document.getElementById('s3msg'),'error','Please tick all consent boxes.');return;}
+
+  const userData = {
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName:  document.getElementById('lastName').value.trim(),
+    email:     document.getElementById('signupEmail').value.trim(),
+    phone:     document.getElementById('countryCode').value + document.getElementById('phoneNum').value.trim(),
+    plan:      selectedPlanVal,
+    language:  currentLang,
+    signupDate: new Date().toISOString(),
+    trialEnd:   new Date(Date.now()+14*24*60*60*1000).toISOString(),
+    payMethod: selectedPayMethod,
+    consentTimestamp: new Date().toISOString(),
+    status: 'trial',
+  };
+
+  // Save to Google Sheet via Apps Script
+  saveToSheet(userData);
+
+  const btn = document.getElementById('btn3');
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div>';
+
+  if(selectedPayMethod==='stripe'){
+    const link = STRIPE_LINKS[selectedPlanVal];
+    if(link.includes('REPLACE')){
+      showMsg(document.getElementById('s3msg'),'error','⚙️ Stripe not configured yet. Add your Stripe Payment Links to STRIPE_LINKS.');
+      btn.disabled=false; btn.innerHTML=`<span id="btn3text">${LANGS[currentLang].payBtn}</span>`; return;
+    }
+    const url = link+'?prefilled_email='+encodeURIComponent(userData.email);
+    setTimeout(()=>{window.location.href=url;},500);
+  } else {
+    if(RZP_KEY.includes('REPLACE')){
+      showMsg(document.getElementById('s3msg'),'error','⚙️ Razorpay not configured yet. Add your Razorpay Key and Plan IDs.');
+      btn.disabled=false; btn.innerHTML=`<span id="btn3text">${LANGS[currentLang].payBtn}</span>`; return;
+    }
+    launchRazorpay(userData);
+  }
+}
+
+async function saveToSheet(data) {
+  if(APPS_SCRIPT_URL==='YOUR_APPS_SCRIPT_WEB_APP_URL') return;
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'signup', data})
+    });
+  } catch(e){ console.log('Sheet save error:', e); }
+}
+
+function launchRazorpay(userData) {
+  const planAmounts = {starter:99900,pro:249900,enterprise:999900};
+  if(typeof Razorpay==='undefined'){
+    const s=document.createElement('script');
+    s.src='https://checkout.razorpay.com/v1/checkout.js';
+    s.onload=()=>openRzp(userData,planAmounts);
+    document.head.appendChild(s);
+  } else { openRzp(userData,planAmounts); }
+}
+
+function openRzp(userData,planAmounts) {
+  const opts={
+    key:RZP_KEY,
+    subscription_id:RZP_PLANS[userData.plan],
+    name:'APPEYE',
+    description:userData.plan+' Plan — 14-day free trial',
+    prefill:{name:userData.firstName+' '+userData.lastName,email:userData.email,contact:userData.phone},
+    theme:{color:'#00d4ff'},
+    handler:function(r){
+      showMsg(document.getElementById('s3msg'),'success','✓ Payment complete! Check your email for dashboard access.');
+      saveToSheet({...userData,paymentId:r.razorpay_payment_id,status:'active'});
+    },
+    modal:{ondismiss:function(){
+      document.getElementById('btn3').disabled=false;
+      document.getElementById('btn3').innerHTML=`<span id="btn3text">${LANGS[currentLang].payBtn}</span>`;
+    }}
+  };
+  try{new Razorpay(opts).open();}catch(e){showMsg(document.getElementById('s3msg'),'error','Could not open Razorpay. Try Stripe instead.');}
+}
+
+// ═══════════════════════════════════════════════
+// STEP NAVIGATION
+// ═══════════════════════════════════════════════
+function showStep(n) {
+  [1,2,3].forEach(i=>{
+    document.getElementById('step'+i).style.display = i===n?'block':'none';
+    const dot = document.getElementById('sd'+i);
+    if(i<n){dot.classList.remove('active');dot.classList.add('done');dot.innerHTML='✓';}
+    else if(i===n){dot.classList.add('active');dot.classList.remove('done');}
+    else{dot.classList.remove('active','done');}
+    if(i<3){const line=document.getElementById('sl'+i);line.classList.toggle('done',i<n);}
+  });
+  document.getElementById('progressFill').style.width=(n===1?'33%':n===2?'66%':'100%');
+  updateSummary();
+}
+
+function backToStep1(){showStep(1);}
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function showMsg(el,type,text){el.className='msg '+type+' show';el.textContent=text;}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+</script>
+</body>
+</html>

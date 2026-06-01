@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APPEYE — One Eye. Every App. Every Page.</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3733978827592455" crossorigin="anonymous"></script>
+<meta name="description" content="APPEYE is the all-seeing business intelligence platform for app developers. Manage up to 25 apps and 25 websites — revenue, ads, SEO, users — unified in one dashboard.">
+<meta name="keywords" content="app management dashboard, admob tracker, razorpay dashboard, app revenue tracker, web page management, SaaS dashboard India">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+:root{
+  --bg:#04050a;--bg2:#080b12;--bg3:#0d1018;
+  --eye:#00d4ff;--eye2:#0099cc;--eye3:rgba(0,212,255,0.08);
+  --gold:#f5c842;--gold2:rgba(245,200,66,0.1);
+  --text:#eef0f8;--text2:#7a8099;--text3:#3a3f52;
+  --border:rgba(0,212,255,0.12);--border2:rgba(255,255,255,0.05);
+  --green:#22d3a0;--red:#ff4d6d;--purple:#a78bfa;
+  --grad:linear-gradient(135deg,#00d4ff,#a78bfa);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% -5%,rgba(0,212,255,0.07) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 90% 90%,rgba(167,139,250,0.05) 0%,transparent 60%)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:60px 60px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;height:64px;background:rgba(4,5,10,0.8);backdrop-filter:blur(20px);border-bottom:0.5px solid var(--border)}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-name{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--text);letter-spacing:0.05em}
+.logo-name span{color:var(--eye)}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s}
+.nav-links a:hover{color:var(--eye)}
+.nav-cta{display:flex;gap:10px}
+.btn{padding:9px 22px;border-radius:8px;font-size:13px;cursor:pointer;transition:all 0.2s;border:none;font-family:'Inter',sans-serif;font-weight:500}
+.btn-ghost{background:transparent;border:0.5px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--eye);color:var(--eye)}
+.btn-primary{background:var(--eye);color:var(--bg);font-weight:600}
+.btn-primary:hover{background:#33ddff;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,212,255,0.3)}
+.btn-large{padding:14px 36px;font-size:15px;border-radius:10px}
+.btn-xl{padding:18px 52px;font-size:17px;border-radius:12px;font-weight:700}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8rem 2rem 4rem;text-align:center;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,255,0.06);border:0.5px solid var(--border);border-radius:100px;padding:6px 18px;margin-bottom:2.5rem;font-family:'DM Mono',monospace;font-size:11px;color:var(--eye);letter-spacing:0.12em}
+.live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(3.5rem,9vw,7.5rem);font-weight:800;line-height:0.9;letter-spacing:-0.03em;margin-bottom:1.5rem}
+.hero-title .t1{display:block;color:var(--text)}
+.hero-title .t2{display:block;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-title .t3{display:block;color:var(--text);font-size:0.55em;font-weight:600;opacity:0.4;letter-spacing:0.05em;margin-top:0.4em}
+.hero-sub{font-size:clamp(1rem,2vw,1.25rem);color:var(--text2);max-width:620px;line-height:1.8;margin:0 auto 3rem;font-weight:300}
+.eye-hero{width:100px;height:100px;margin:0 auto 2rem;animation:floatEye 4s ease-in-out infinite}
+@keyframes floatEye{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.stats{display:flex;gap:3rem;justify-content:center;margin:3rem 0;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-n{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:var(--eye);line-height:1}
+.stat-l{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-top:4px}
+.stat-div{width:0.5px;background:var(--border);height:50px;align-self:center}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:2rem}
+.hero-note{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);display:flex;align-items:center;gap:8px;justify-content:center}
+.hero-note-sep{width:30px;height:0.5px;background:var(--text3)}
+
+/* DASHBOARD PREVIEW */
+.dash-preview{margin:5rem auto 0;max-width:960px;background:var(--bg2);border:0.5px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 0 0 0.5px var(--border),0 40px 100px rgba(0,0,0,0.7)}
+.dash-bar{background:var(--bg3);padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:0.5px solid var(--border2)}
+.dash-dot{width:10px;height:10px;border-radius:50%}
+.dash-url{flex:1;background:rgba(255,255,255,0.03);border-radius:6px;padding:5px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin:0 1rem}
+.dash-body{display:grid;grid-template-columns:200px 1fr;min-height:420px}
+.dash-sidebar{background:var(--bg3);padding:1.25rem 0;border-right:0.5px solid var(--border2)}
+.dash-logo{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--eye);padding:0 1.25rem;margin-bottom:1.5rem}
+.dash-section-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:0.15em;text-transform:uppercase;padding:0 1.25rem;margin:1rem 0 0.4rem}
+.dash-nav{padding:7px 1.25rem;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:8px;border-left:2px solid transparent}
+.dash-nav.active{color:var(--eye);border-left-color:var(--eye);background:rgba(0,212,255,0.05)}
+.dash-main{padding:1.5rem}
+.dash-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1rem}
+.dash-metric{background:var(--bg3);border-radius:10px;padding:12px;border:0.5px solid var(--border2)}
+.dash-metric-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;font-family:'DM Mono',monospace}
+.dash-metric-value{font-size:1.25rem;font-weight:600;color:var(--text);margin-top:4px;font-family:'Syne',sans-serif}
+.dash-metric-change{font-size:10px;margin-top:2px;font-family:'DM Mono',monospace}
+.dash-chart{background:var(--bg3);border-radius:10px;padding:12px;height:110px;display:flex;align-items:flex-end;gap:3px;border:0.5px solid var(--border2)}
+
+/* SECTIONS */
+section{padding:7rem 2rem;position:relative;z-index:1}
+.container{max-width:1100px;margin:0 auto}
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:11px;color:var(--eye);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:1rem}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:800;color:var(--text);line-height:1.05;margin-bottom:1rem;letter-spacing:-0.02em}
+.section-sub{font-size:1.1rem;color:var(--text2);max-width:560px;line-height:1.8;font-weight:300}
+
+/* PILLARS */
+.pillars{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:4rem}
+.pillar{background:var(--bg2);border:0.5px solid var(--border2);border-radius:20px;padding:3rem;position:relative;overflow:hidden}
+.pillar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+.pillar.web::before{background:linear-gradient(135deg,var(--gold),var(--green))}
+.pillar-icon{font-size:2.5rem;margin-bottom:1.5rem}
+.pillar-title{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:0.75rem}
+.pillar-desc{font-size:0.95rem;color:var(--text2);line-height:1.8;font-weight:300;margin-bottom:1.5rem}
+.pillar-features{list-style:none;display:flex;flex-direction:column;gap:8px}
+.pillar-features li{display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--text2)}
+.pillar-features li::before{content:'◈';color:var(--eye);font-size:10px;flex-shrink:0}
+.pillar.web .pillar-features li::before{color:var(--gold)}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5px;margin-top:4rem;background:var(--border2);border:0.5px solid var(--border2);border-radius:20px;overflow:hidden}
+.feat{background:var(--bg2);padding:2.5rem;transition:background 0.2s}
+.feat:hover{background:var(--bg3)}
+.feat-icon{font-size:1.8rem;margin-bottom:1.25rem}
+.feat-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.75rem}
+.feat-desc{font-size:0.9rem;color:var(--text2);line-height:1.7;font-weight:300}
+.feat-tag{display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:10px;color:var(--eye);background:var(--eye3);padding:3px 10px;border-radius:4px}
+.feat-tag.gold{color:var(--gold);background:var(--gold2)}
+.feat-tag.green{color:var(--green);background:rgba(34,211,160,0.08)}
+.feat-tag.purple{color:var(--purple);background:rgba(167,139,250,0.08)}
+
+/* TESLA */
+.tesla-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem}
+.tesla-card{background:var(--bg2);border:0.5px solid var(--border2);border-radius:16px;padding:2.5rem;text-align:center;transition:transform 0.2s}
+.tesla-card:hover{transform:translateY(-4px)}
+.tesla-num{font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;line-height:1;margin-bottom:1rem}
+.tesla-num.n3{color:var(--eye)}.tesla-num.n6{color:var(--gold)}.tesla-num.n9{color:var(--purple)}
+.tesla-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:0.75rem}
+.tesla-desc{font-size:0.9rem;color:var(--text2);line-height:1.7;font-weight:300}
+
+/* PRINCIPLES */
+.principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:4rem}
+.principle{background:var(--bg2);border:0.5px solid var(--border2);border-radius:14px;padding:2rem;border-left:2px solid var(--eye)}
+.principle-school{font-family:'DM Mono',monospace;font-size:10px;color:var(--eye);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem}
+.principle-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.5rem}
+.principle-desc{font-size:0.88rem;color:var(--text2);line-height:1.7;font-weight:300}
+
+/* REVENUE */
+.revenue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.5rem;margin-top:4rem}
+.revenue-card{background:var(--bg2);border:0.5px solid var(--border2);border-radius:14px;padding:1.75rem;text-align:center;transition:all 0.2s}
+.revenue-card:hover{border-color:var(--eye);transform:translateY(-3px)}
+.revenue-icon{font-size:2rem;margin-bottom:1rem}
+.revenue-name{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:0.5rem}
+.revenue-desc{font-size:0.85rem;color:var(--text2);line-height:1.6}
+
+/* PRICING */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem;align-items:start}
+.price-card{background:var(--bg2);border:0.5px solid var(--border2);border-radius:20px;padding:2.5rem;position:relative;transition:transform 0.2s}
+.price-card:hover{transform:translateY(-4px)}
+.price-card.popular{border-color:var(--eye);background:linear-gradient(160deg,rgba(0,212,255,0.05) 0%,var(--bg2) 50%);box-shadow:0 0 40px rgba(0,212,255,0.08)}
+.popular-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--grad);color:var(--bg);font-family:'DM Mono',monospace;font-size:10px;font-weight:700;padding:4px 16px;border-radius:100px;white-space:nowrap}
+.price-tier{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1.5rem}
+.price-amount{display:flex;align-items:flex-end;gap:4px;margin-bottom:0.25rem}
+.price-sym{font-family:'Syne',sans-serif;font-size:1.5rem;color:var(--eye);line-height:2}
+.price-num{font-family:'Syne',sans-serif;font-size:3.5rem;font-weight:800;color:var(--text);line-height:1}
+.price-period{font-size:0.9rem;color:var(--text3);margin-bottom:0.5rem}
+.price-alt{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:0.5rem}
+.price-apps{font-family:'DM Mono',monospace;font-size:11px;color:var(--eye);margin-bottom:1.5rem}
+.price-trial{background:rgba(34,211,160,0.08);border:0.5px solid rgba(34,211,160,0.2);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--green);margin-bottom:1.5rem;font-family:'DM Mono',monospace;text-align:center}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:2rem}
+.price-features li{display:flex;align-items:flex-start;gap:10px;font-size:0.9rem;color:var(--text2);line-height:1.5}
+.price-features li::before{content:'—';color:var(--eye);flex-shrink:0;font-family:'DM Mono',monospace;font-size:10px}
+.price-features li.dim{color:var(--text3)}
+.price-features li.dim::before{color:var(--text3)}
+.price-btn{width:100%;padding:14px;border-radius:10px;font-size:14px;font-weight:600}
+.currency-toggle{display:flex;background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;overflow:hidden;width:fit-content;margin:2rem auto 0}
+.curr-btn{padding:9px 22px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);cursor:pointer;border:none;background:transparent;transition:all 0.2s}
+.curr-btn.active{background:var(--eye);color:var(--bg);font-weight:700}
+
+/* TESTIMONIALS */
+.testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem}
+.testi{background:var(--bg2);border:0.5px solid var(--border2);border-radius:16px;padding:2rem}
+.testi-text{font-size:0.95rem;color:var(--text2);line-height:1.8;font-weight:300;margin-bottom:1.5rem;font-style:italic}
+.testi-text::before{content:'"';color:var(--eye);font-size:2rem;line-height:0;vertical-align:-0.5em;margin-right:4px}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-av{width:36px;height:36px;border-radius:50%;background:var(--eye3);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--eye)}
+.testi-name{font-size:13px;font-weight:600;color:var(--text)}
+.testi-role{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.testi-stars{color:var(--gold);font-size:11px;margin-left:auto}
+
+/* FAQ */
+.faq{display:flex;flex-direction:column;max-width:720px;margin-top:3rem}
+.faq-item{border-bottom:0.5px solid var(--border2)}
+.faq-q{padding:1.25rem 0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:1rem;color:var(--text)}
+.faq-q:hover{color:var(--eye)}
+.faq-icon{font-family:'DM Mono',monospace;color:var(--eye);font-size:1.2rem}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.3s ease;font-size:0.92rem;color:var(--text2);line-height:1.8;font-weight:300}
+.faq-a.open{max-height:250px;padding-bottom:1rem}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(4,5,10,0.92);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:0.5px solid var(--border);border-radius:20px;padding:3rem;width:100%;max-width:500px;position:relative;box-shadow:0 40px 80px rgba(0,0,0,0.6)}
+.modal-close{position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;color:var(--text3);font-size:1.2rem;cursor:pointer}
+.modal-close:hover{color:var(--text)}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--text);margin-bottom:0.5rem}
+.modal-sub{font-size:0.9rem;color:var(--text2);margin-bottom:2rem}
+.form-group{margin-bottom:1.25rem}
+.form-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;display:block}
+.form-input{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.95rem;outline:none;transition:border-color 0.2s}
+.form-input:focus{border-color:var(--eye)}
+.form-input::placeholder{color:var(--text3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.plan-summary{background:var(--bg3);border:0.5px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between}
+.plan-summary-name{font-family:'Syne',sans-serif;font-size:0.9rem;color:var(--eye);font-weight:700}
+.plan-summary-price{font-family:'DM Mono',monospace;font-size:13px;color:var(--text2)}
+.plan-summary-trial{font-family:'DM Mono',monospace;font-size:10px;color:var(--green);margin-top:2px}
+.pay-tabs{display:flex;background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;overflow:hidden;margin-bottom:1.5rem}
+.pay-tab{flex:1;padding:10px;text-align:center;cursor:pointer;border:none;background:transparent;color:var(--text3);font-family:'DM Mono',monospace;font-size:11px;transition:all 0.2s}
+.pay-tab.active{background:var(--eye);color:var(--bg);font-weight:700}
+.stripe-btn{width:100%;padding:15px;border-radius:8px;font-size:14px;background:#635bff;color:white;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.stripe-btn:hover{background:#7b73ff;transform:translateY(-1px)}
+.rzp-btn{width:100%;padding:15px;border-radius:8px;font-size:14px;background:#2d82b7;color:white;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.rzp-btn:hover{background:#3a9fd6;transform:translateY(-1px)}
+.consent-box{background:rgba(255,77,109,0.05);border:0.5px solid rgba(255,77,109,0.2);border-radius:10px;padding:1rem;margin-bottom:1.25rem}
+.consent-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--red);letter-spacing:0.08em;margin-bottom:0.75rem;font-weight:700}
+.consent-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:0.6rem;cursor:pointer}
+.consent-cb{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--text3);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.consent-cb.checked{background:var(--green);border-color:var(--green)}
+.consent-text{font-size:11px;color:var(--text2);line-height:1.5}
+.consent-text a{color:var(--eye)}
+.consent-text strong{color:var(--red)}
+.msg{padding:10px 14px;border-radius:8px;font-family:'DM Mono',monospace;font-size:12px;margin-bottom:1rem;display:none}
+.msg.error{background:rgba(255,77,109,0.1);border:0.5px solid rgba(255,77,109,0.3);color:var(--red)}
+.msg.success{background:rgba(34,211,160,0.1);border:0.5px solid rgba(34,211,160,0.3);color:var(--green)}
+.msg.show{display:block}
+.secure-badge{display:flex;align-items:center;justify-content:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-top:1rem}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.modal-footer{text-align:center;margin-top:1.5rem;font-size:13px;color:var(--text3)}
+.modal-footer a{color:var(--eye);cursor:pointer;text-decoration:none}
+
+/* CTA */
+.cta-section{text-align:center;padding:9rem 2rem;background:linear-gradient(180deg,transparent 0%,rgba(0,212,255,0.03) 50%,transparent 100%);position:relative;z-index:1}
+.cta-title{font-family:'Syne',sans-serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:800;color:var(--text);line-height:0.95;letter-spacing:-0.03em;margin-bottom:1.5rem}
+.cta-title span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.trust-bar{display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-top:1.5rem}
+.trust-item{display:flex;align-items:center;gap:6px}
+
+/* FOOTER */
+footer{padding:3rem 2rem;border-top:0.5px solid var(--border2);display:flex;flex-direction:column;align-items:center;gap:1.5rem;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);position:relative;z-index:1}
+.footer-links{display:flex;gap:2rem}
+.footer-links a{color:var(--text3);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--eye)}
+
+/* CHATBOT */
+.chat-bubble{position:fixed;bottom:24px;right:24px;z-index:9999;width:56px;height:56px;border-radius:50%;background:var(--eye);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,212,255,0.4);transition:all 0.3s}
+.chat-bubble:hover{transform:scale(1.1)}
+.chat-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:white;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace}
+.chat-window{position:fixed;bottom:92px;right:24px;z-index:9999;width:340px;height:480px;background:var(--bg2);border:0.5px solid var(--border);border-radius:20px;display:none;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.6);overflow:hidden}
+.chat-window.open{display:flex}
+.chat-header{background:var(--bg3);padding:14px 16px;border-bottom:0.5px solid var(--border2);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.chat-avatar{width:36px;height:36px;border-radius:50%;background:var(--eye3);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.chat-header-name{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:var(--text)}
+.chat-header-status{font-family:'DM Mono',monospace;font-size:10px;color:var(--green);display:flex;align-items:center;gap:4px}
+.status-dot{width:5px;height:5px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+.chat-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.chat-messages::-webkit-scrollbar{width:3px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--text3);border-radius:3px}
+.msg-row{display:flex;gap:6px;align-items:flex-end}
+.msg-row.user{flex-direction:row-reverse}
+.msg-av{width:24px;height:24px;border-radius:50%;background:var(--eye3);display:flex;align-items:center;justify-content:center;font-size:0.7rem;flex-shrink:0}
+.msg-av.u{background:rgba(167,139,250,0.15)}
+.msg-bubble{max-width:78%;padding:9px 12px;border-radius:12px;font-size:12px;line-height:1.6;white-space:pre-wrap}
+.msg-bubble.bot{background:var(--bg3);border:0.5px solid var(--border2);color:var(--text2);border-bottom-left-radius:3px}
+.msg-bubble.user{background:var(--eye);color:var(--bg);border-bottom-right-radius:3px;font-weight:500}
+.msg-bubble.sys{background:rgba(245,200,66,0.08);border:0.5px solid rgba(245,200,66,0.2);color:var(--gold);font-family:'DM Mono',monospace;font-size:10px;text-align:center;border-radius:6px;width:100%}
+.typing{display:flex;align-items:center;gap:3px;padding:9px 12px}
+.typing-dot{width:5px;height:5px;background:var(--text3);border-radius:50%;animation:td 1.4s infinite}
+.typing-dot:nth-child(2){animation-delay:0.2s}.typing-dot:nth-child(3){animation-delay:0.4s}
+@keyframes td{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.quick-replies{padding:0 14px 10px;display:flex;gap:5px;flex-wrap:wrap;flex-shrink:0}
+.qr{background:var(--bg3);border:0.5px solid var(--border2);border-radius:16px;padding:5px 10px;font-size:10px;color:var(--text2);cursor:pointer;transition:all 0.2s;font-family:'DM Mono',monospace}
+.qr:hover{border-color:var(--eye);color:var(--eye)}
+.chat-input-area{border-top:0.5px solid var(--border2);padding:10px 14px;display:flex;gap:6px;align-items:flex-end;flex-shrink:0;background:var(--bg3)}
+.chat-input{flex:1;background:var(--bg2);border:0.5px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-family:'Inter',sans-serif;font-size:12px;outline:none;resize:none;max-height:60px;min-height:32px;transition:border-color 0.2s;line-height:1.4}
+.chat-input:focus{border-color:var(--eye)}
+.chat-input::placeholder{color:var(--text3)}
+.send-btn{width:32px;height:32px;border-radius:8px;background:var(--eye);color:var(--bg);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.2s;flex-shrink:0}
+.send-btn:hover{background:#33ddff}
+.send-btn:disabled{opacity:0.4;cursor:not-allowed}
+
+/* Region banner */
+.region-banner{position:fixed;bottom:1.5rem;left:1.5rem;z-index:50;background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:10px 16px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.4);opacity:0;transition:opacity 0.4s;pointer-events:none}
+.region-banner.show{opacity:1;pointer-events:auto}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp 0.9s ease forwards;opacity:0}
+.d1{animation-delay:0.1s}.d2{animation-delay:0.2s}.d3{animation-delay:0.3s}.d4{animation-delay:0.4s}.d5{animation-delay:0.6s}
+
+@media(max-width:768px){
+  nav{padding:0 1.5rem}.nav-links{display:none}
+  .pillars,.pricing-grid,.tesla-grid,.testimonials{grid-template-columns:1fr}
+  .dash-body{grid-template-columns:1fr}.dash-sidebar{display:none}
+  .dash-metrics{grid-template-columns:repeat(2,1fr)}
+  .chat-window{width:calc(100vw - 32px);right:16px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <ellipse cx="18" cy="18" rx="17" ry="10" stroke="#00d4ff" stroke-width="1.2"/>
+      <ellipse cx="18" cy="18" rx="10" ry="17" stroke="rgba(0,212,255,0.25)" stroke-width="0.8"/>
+      <circle cx="18" cy="18" r="5" stroke="#00d4ff" stroke-width="1"/>
+      <circle cx="18" cy="18" r="2.5" fill="#00d4ff"/>
+    </svg>
+    <div class="logo-name">APP<span>EYE</span></div>
+  </div>
+  <div class="nav-links">
+    <a href="#manage">What we manage</a>
+    <a href="#features">Features</a>
+    <a href="#revenue">Revenue</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="nav-cta">
+    <button class="btn btn-ghost" onclick="openModal('login')">Sign in</button>
+    <button class="btn btn-primary" onclick="openModal('signup')">Start free trial</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow fu"><div class="live-dot"></div>Live · 25 Apps · 25 Websites · 9 Revenue Streams</div>
+  <svg class="eye-hero fu d1" viewBox="0 0 120 120" fill="none">
+    <circle cx="60" cy="60" r="58" stroke="rgba(0,212,255,0.12)" stroke-width="0.8"/>
+    <ellipse cx="60" cy="60" rx="55" ry="28" stroke="#00d4ff" stroke-width="1.5"/>
+    <ellipse cx="60" cy="60" rx="28" ry="55" stroke="rgba(0,212,255,0.2)" stroke-width="0.8"/>
+    <circle cx="60" cy="60" r="18" stroke="#00d4ff" stroke-width="1.5"/>
+    <circle cx="60" cy="60" r="9" fill="rgba(0,212,255,0.12)" stroke="#00d4ff" stroke-width="1"/>
+    <circle cx="60" cy="60" r="4" fill="#00d4ff"/>
+    <circle cx="55" cy="55" r="2" fill="rgba(255,255,255,0.5)"/>
+  </svg>
+  <h1 class="hero-title">
+    <span class="t1 fu d2">One Eye.</span>
+    <span class="t2 fu d3">Total Control.</span>
+    <span class="t3 fu d4">25 Apps · 25 Websites · Revenue · Growth</span>
+  </h1>
+  <p class="hero-sub fu d4">APPEYE is the all-seeing business intelligence platform for developers. Manage up to 25 apps and 25 websites — revenue, ads, SEO, users and automations — unified in one powerful dashboard.</p>
+  <div class="stats fu d4">
+    <div class="stat"><div class="stat-n">3</div><div class="stat-l">Tesla cycles</div></div>
+    <div class="stat-div"></div>
+    <div class="stat"><div class="stat-n">9</div><div class="stat-l">Revenue streams</div></div>
+    <div class="stat-div"></div>
+    <div class="stat"><div class="stat-n">25</div><div class="stat-l">Apps + Websites</div></div>
+    <div class="stat-div"></div>
+    <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Growth potential</div></div>
+  </div>
+  <div class="hero-cta fu d5">
+    <button class="btn btn-primary btn-xl" onclick="openModal('signup')">Start 14-day free trial</button>
+    <button class="btn btn-ghost btn-large" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">View pricing →</button>
+  </div>
+  <div class="hero-note fu d5"><div class="hero-note-sep"></div>No credit card required · Cancel any time<div class="hero-note-sep"></div></div>
+  <div class="dash-preview fu d5">
+    <div class="dash-bar">
+      <div class="dash-dot" style="background:#ff4d6d"></div>
+      <div class="dash-dot" style="background:#f5c842"></div>
+      <div class="dash-dot" style="background:#22d3a0"></div>
+      <div class="dash-url">app.appeye.app/dashboard</div>
+    </div>
+    <div class="dash-body">
+      <div class="dash-sidebar">
+        <div class="dash-logo">APP👁EYE</div>
+        <div class="dash-section-label">Apps (25)</div>
+        <div class="dash-nav active">◈ Overview</div>
+        <div class="dash-nav">₹ Revenue</div>
+        <div class="dash-nav">◉ Users</div>
+        <div class="dash-nav">▣ Ad Manager</div>
+        <div class="dash-nav">◎ Play SEO</div>
+        <div class="dash-section-label">Websites (25)</div>
+        <div class="dash-nav">🌐 Web Pages</div>
+        <div class="dash-nav">💰 Page Sales</div>
+        <div class="dash-nav">📈 Web Traffic</div>
+        <div class="dash-nav">🔍 Web SEO</div>
+        <div class="dash-section-label">System</div>
+        <div class="dash-nav">⟳ Automation</div>
+        <div class="dash-nav">⚡ Tesla AI</div>
+      </div>
+      <div class="dash-main">
+        <div class="dash-metrics">
+          <div class="dash-metric"><div class="dash-metric-label">Total Revenue</div><div class="dash-metric-value" style="color:var(--eye)">₹47.3K</div><div class="dash-metric-change" style="color:var(--green)">↑ 23% MTD</div></div>
+          <div class="dash-metric"><div class="dash-metric-label">App Users</div><div class="dash-metric-value">3,841</div><div class="dash-metric-change" style="color:var(--green)">↑ 12% week</div></div>
+          <div class="dash-metric"><div class="dash-metric-label">Web Sales</div><div class="dash-metric-value" style="color:var(--gold)">$1.2K</div><div class="dash-metric-change" style="color:var(--green)">↑ 8% today</div></div>
+          <div class="dash-metric"><div class="dash-metric-label">Ad Revenue</div><div class="dash-metric-value" style="color:var(--purple)">$892</div><div class="dash-metric-change" style="color:var(--green)">eCPM $5.40</div></div>
+        </div>
+        <div class="dash-chart" id="previewChart"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT APPEYE MANAGES -->
+<div style="text-align:center;padding:1.5rem 2rem;background:var(--bg2);border-top:0.5px solid var(--border2);border-bottom:0.5px solid var(--border2);position:relative;z-index:1;max-width:100%;overflow:hidden">
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3733978827592455"
+     data-ad-slot="auto"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+<section id="manage" style="background:var(--bg2);border-top:0.5px solid var(--border2)">
+  <div class="container">
+    <div class="section-eyebrow">Complete management</div>
+    <h2 class="section-title">One eye sees everything</h2>
+    <p class="section-sub">APPEYE manages both your mobile apps and web pages under one intelligent roof — up to 25 of each.</p>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon">📱</div>
+        <div class="pillar-title">App Management — up to 25</div>
+        <div class="pillar-desc">Full intelligence over all your Android and Flutter apps. Revenue, users, ads and store optimization — automated and unified.</div>
+        <ul class="pillar-features">
+          <li>Up to 25 apps simultaneously</li>
+          <li>Live AdMob revenue tracking</li>
+          <li>Razorpay payment monitoring</li>
+          <li>Play Store SEO optimization</li>
+          <li>User analytics by country</li>
+          <li>Tesla 3·6·9 ad scheduling</li>
+          <li>Google Sheets integration</li>
+          <li>Incident and policy alerts</li>
+        </ul>
+      </div>
+      <div class="pillar web">
+        <div class="pillar-icon">🌐</div>
+        <div class="pillar-title">Web Page Management — up to 25</div>
+        <div class="pillar-desc">Track, optimize and grow up to 25 websites or web products. Sales, traffic, ad revenue and SEO — all monitored and automated.</div>
+        <ul class="pillar-features">
+          <li>Up to 25 web pages/sites</li>
+          <li>Page sales & conversion tracking</li>
+          <li>Web traffic analytics</li>
+          <li>Google AdSense revenue</li>
+          <li>Web SEO rank tracking</li>
+          <li>Lead capture monitoring</li>
+          <li>A/B test performance</li>
+          <li>Sales funnel automation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<div style="text-align:center;padding:1.5rem 2rem;background:var(--bg2);border-top:0.5px solid var(--border2);border-bottom:0.5px solid var(--border2);position:relative;z-index:1;max-width:100%;overflow:hidden">
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3733978827592455"
+     data-ad-slot="auto"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+<section id="features">
+  <div class="container">
+    <div class="section-eyebrow">Full feature set</div>
+    <h2 class="section-title">Everything you need to grow</h2>
+    <p class="section-sub">Built on Harvard, Wharton, Stanford, MIT principles + Tesla 3·6·9 + Bhagavat Gita dharma.</p>
+    <div class="features-grid">
+      <div class="feat"><div class="feat-icon">◈</div><div class="feat-name">Unified Revenue Dashboard</div><div class="feat-desc">All income in real time — Razorpay, AdMob, AdSense, Stripe, Amazon Affiliate — apps and websites combined.</div><div class="feat-tag">Real-time</div></div>
+      <div class="feat"><div class="feat-icon">⚡</div><div class="feat-name">Tesla 3·6·9 Ad Optimizer</div><div class="feat-desc">Maximizes eCPM using Tesla's sacred scheduling — ads every 3rd action, creatives every 6 hours, full cycles every 9 days. Works for AdMob and AdSense.</div><div class="feat-tag">AI Powered</div></div>
+      <div class="feat"><div class="feat-icon">🌐</div><div class="feat-name">Web Page Sales Tracking</div><div class="feat-desc">Monitor every sale, lead and conversion on your web pages. See which pages make money and which need optimization.</div><div class="feat-tag gold">Web</div></div>
+      <div class="feat"><div class="feat-icon">📊</div><div class="feat-name">Web Traffic Intelligence</div><div class="feat-desc">Track visitor sources, bounce rates, time on page and conversion funnels across all 25 web properties.</div><div class="feat-tag gold">Web</div></div>
+      <div class="feat"><div class="feat-icon">🔍</div><div class="feat-name">Dual SEO Engine</div><div class="feat-desc">Play Store keyword rankings for your apps AND Google search rankings for your web pages — both tracked and auto-optimized.</div><div class="feat-tag">Auto-optimize</div></div>
+      <div class="feat"><div class="feat-icon">💰</div><div class="feat-name">Ad Revenue Maximizer</div><div class="feat-desc">Track and grow ad income across AdMob, AdSense, and affiliate programs simultaneously. Know exactly where every rupee comes from.</div><div class="feat-tag green">Revenue</div></div>
+      <div class="feat"><div class="feat-icon">⊞</div><div class="feat-name">25 Apps + 25 Websites</div><div class="feat-desc">Enterprise plan manages up to 25 mobile apps AND 25 web pages. Switch instantly. Each gets its own analytics and revenue tracking.</div><div class="feat-tag">Multi-platform</div></div>
+      <div class="feat"><div class="feat-icon">🌍</div><div class="feat-name">Country Intelligence</div><div class="feat-desc">Track users and revenue across India, Canada, USA, Nepal, Bhutan, Sri Lanka and 190+ countries. Know your best markets.</div><div class="feat-tag">Global</div></div>
+      <div class="feat"><div class="feat-icon">⟳</div><div class="feat-name">9 Smart Automations</div><div class="feat-desc">Daily revenue reports, renewal reminders, sales alerts, SEO reports, incident notifications — all automated to your inbox.</div><div class="feat-tag">9 Automations</div></div>
+      <div class="feat"><div class="feat-icon">📈</div><div class="feat-name">Sales Funnel Tracking</div><div class="feat-desc">See every step before buying — from first visit to payment. Identify where you lose customers and fix automatically.</div><div class="feat-tag gold">Web</div></div>
+      <div class="feat"><div class="feat-icon">◉</div><div class="feat-name">Google Sheets Integration</div><div class="feat-desc">Connects to your existing Google Sheet — no database setup. Your data stays in your Sheet, APPEYE reads it live.</div><div class="feat-tag">No code</div></div>
+      <div class="feat"><div class="feat-icon">🔔</div><div class="feat-name">Smart Alerts</div><div class="feat-desc">Instant notifications for revenue drops, traffic spikes, Play Store policy changes, payment failures and sales milestones.</div><div class="feat-tag purple">Alerts</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESLA -->
+<section style="background:var(--bg2);border-top:0.5px solid var(--border2)">
+  <div class="container">
+    <div class="section-eyebrow">Tesla 3·6·9 Intelligence</div>
+    <h2 class="section-title">The universe's growth code</h2>
+    <p class="section-sub">"If you only knew the magnificence of 3, 6 and 9, you would have a key to the universe." — Nikola Tesla</p>
+    <div class="tesla-grid">
+      <div class="tesla-card"><div class="tesla-num n3">3</div><div class="tesla-title">The Foundation</div><div class="tesla-desc">Every 3rd user action triggers an optimized ad. Every 3 days APPEYE analyzes revenue patterns. Minimum 3 data points for intelligence to activate.</div></div>
+      <div class="tesla-card"><div class="tesla-num n6">6</div><div class="tesla-title">The Amplifier</div><div class="tesla-desc">Ad creatives rotate every 6 hours preventing banner blindness. Revenue reports every 6 days. 6 income streams tracked simultaneously.</div></div>
+      <div class="tesla-card"><div class="tesla-num n9">9</div><div class="tesla-title">The Completion</div><div class="tesla-desc">Full optimization cycles complete every 9 days. 9 automations run continuously. The 9th cycle brings peak eCPM — Tesla's completion principle.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section>
+  <div class="container">
+    <div class="section-eyebrow">World-class business principles</div>
+    <h2 class="section-title">Built on proven growth science</h2>
+    <p class="section-sub">APPEYE applies principles from the world's top business schools — embedded into your dashboard automation.</p>
+    <div class="principles">
+      <div class="principle"><div class="principle-school">Harvard Business School</div><div class="principle-name">The 80/20 Revenue Rule</div><div class="principle-desc">Identifies the 20% of users generating 80% of your revenue. Focus where it matters most.</div></div>
+      <div class="principle"><div class="principle-school">Wharton School</div><div class="principle-name">Customer Lifetime Value</div><div class="principle-desc">Track CLV across every app and web page. Know exactly how much each user is worth.</div></div>
+      <div class="principle"><div class="principle-school">Stanford GSB</div><div class="principle-name">Product-Market Fit Signals</div><div class="principle-desc">Monitors retention, engagement and revenue velocity to signal product-market fit.</div></div>
+      <div class="principle"><div class="principle-school">MIT Sloan</div><div class="principle-name">Data-Driven Decisions</div><div class="principle-desc">Every recommendation backed by your own real data — not guesses. Pure evidence-based optimization.</div></div>
+      <div class="principle"><div class="principle-school">London Business School</div><div class="principle-name">Global Market Intelligence</div><div class="principle-desc">Tracks performance across India, Canada, USA and 190+ countries — know where to grow next.</div></div>
+      <div class="principle"><div class="principle-school">Bhagavat Gita</div><div class="principle-name">Dharmic Growth</div><div class="principle-desc">Focus on righteous action. APPEYE automates the outcomes so you can focus on building.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- REVENUE -->
+<div style="text-align:center;padding:1.5rem 2rem;background:var(--bg2);border-top:0.5px solid var(--border2);border-bottom:0.5px solid var(--border2);position:relative;z-index:1;max-width:100%;overflow:hidden">
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3733978827592455"
+     data-ad-slot="auto"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+<section id="revenue" style="background:var(--bg2);border-top:0.5px solid var(--border2)">
+  <div class="container">
+    <div class="section-eyebrow">All your money, one place</div>
+    <h2 class="section-title">9 revenue streams tracked</h2>
+    <p class="section-sub">Every rupee, dollar and cent across all your income sources — apps and web pages combined.</p>
+    <div class="revenue-grid">
+      <div class="revenue-card"><div class="revenue-icon">📱</div><div class="revenue-name">AdMob</div><div class="revenue-desc">App ad revenue with Tesla optimizer</div></div>
+      <div class="revenue-card"><div class="revenue-icon">🌐</div><div class="revenue-name">AdSense</div><div class="revenue-desc">Web page ad revenue tracked live</div></div>
+      <div class="revenue-card"><div class="revenue-icon">💳</div><div class="revenue-name">Razorpay</div><div class="revenue-desc">INR payments, UPI, subscriptions</div></div>
+      <div class="revenue-card"><div class="revenue-icon">💰</div><div class="revenue-name">Stripe</div><div class="revenue-desc">Global USD/CAD payments</div></div>
+      <div class="revenue-card"><div class="revenue-icon">🛒</div><div class="revenue-name">Amazon Affiliate</div><div class="revenue-desc">Affiliate commissions tracked</div></div>
+      <div class="revenue-card"><div class="revenue-icon">🏪</div><div class="revenue-name">Play Store</div><div class="revenue-desc">In-app purchases and subscriptions</div></div>
+      <div class="revenue-card"><div class="revenue-icon">📧</div><div class="revenue-name">Email Sales</div><div class="revenue-desc">Revenue from email campaigns</div></div>
+      <div class="revenue-card"><div class="revenue-icon">🔗</div><div class="revenue-name">Affiliate Links</div><div class="revenue-desc">All affiliate programs in one view</div></div>
+      <div class="revenue-card"><div class="revenue-icon">⭐</div><div class="revenue-name">Sponsorships</div><div class="revenue-desc">Brand deal and sponsor revenue</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="border-top:0.5px solid var(--border2)">
+  <div class="container">
+    <div class="section-eyebrow">Pricing</div>
+    <h2 class="section-title">Simple, honest pricing</h2>
+    <p class="section-sub">14-day free trial. No credit card required. Cancel any time.</p>
+    <div style="text-align:center">
+      <div class="currency-toggle">
+        <button class="curr-btn active" id="btnINR" onclick="setCurrency('INR')">🇮🇳 INR ₹</button>
+        <button class="curr-btn" id="btnUSD" onclick="setCurrency('USD')">🇺🇸 USD $</button>
+        <button class="curr-btn" id="btnCAD" onclick="setCurrency('CAD')">🇨🇦 CAD $</button>
+      </div>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Starter</div>
+        <div class="price-amount"><div class="price-sym" id="cs">₹</div><div class="price-num" id="ps">999</div></div>
+        <div class="price-period">per month</div>
+        <div class="price-alt" id="as">≈ $12 USD / $16 CAD</div>
+        <div class="price-apps">1 app + 1 website</div>
+        <div class="price-trial">✓ 14 days free — no card needed</div>
+        <ul class="price-features">
+          <li>1 app + 1 web page</li>
+          <li>Live revenue dashboard</li>
+          <li>AdMob + AdSense tracking</li>
+          <li>Web page sales tracking</li>
+          <li>User analytics</li>
+          <li>Daily email reports</li>
+          <li>Google Sheets integration</li>
+          <li class="dim">Tesla optimizer (Pro+)</li>
+          <li class="dim">Multi-app/web (Pro+)</li>
+        </ul>
+        <button class="btn btn-ghost price-btn" onclick="startTrial('starter')">Start free trial →</button>
+      </div>
+      <div class="price-card popular">
+        <div class="popular-badge">⚡ MOST POPULAR</div>
+        <div class="price-tier" style="color:var(--eye)">Pro</div>
+        <div class="price-amount"><div class="price-sym" id="cp">₹</div><div class="price-num" id="pp">2,499</div></div>
+        <div class="price-period">per month</div>
+        <div class="price-alt" id="ap">≈ $29 USD / $40 CAD</div>
+        <div class="price-apps" style="color:var(--eye)">5 apps + 5 websites</div>
+        <div class="price-trial" style="background:rgba(0,212,255,0.06);border-color:rgba(0,212,255,0.2);color:var(--eye)">⚡ 14 days free · Tesla AI included</div>
+        <ul class="price-features">
+          <li>5 apps + 5 web pages</li>
+          <li>Everything in Starter</li>
+          <li>Tesla 3·6·9 Ad Optimizer</li>
+          <li>Web sales funnel tracking</li>
+          <li>All 9 revenue streams</li>
+          <li>All 9 automations</li>
+          <li>Global country intelligence</li>
+          <li>Web + App SEO engine</li>
+          <li>Priority support + AI chatbot</li>
+        </ul>
+        <button class="btn btn-primary price-btn" onclick="startTrial('pro')">Start free trial →</button>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Enterprise</div>
+        <div class="price-amount"><div class="price-sym" id="ce">₹</div><div class="price-num" id="pe">9,999</div></div>
+        <div class="price-period">per month</div>
+        <div class="price-alt" id="ae">≈ $119 USD / $162 CAD</div>
+        <div class="price-apps">25 apps + 25 websites</div>
+        <div class="price-trial">✓ 14 days free · White-label option</div>
+        <ul class="price-features">
+          <li>25 apps + 25 web pages</li>
+          <li>Everything in Pro</li>
+          <li>White-label APPEYE</li>
+          <li>Custom branding</li>
+          <li>API access</li>
+          <li>Dedicated support</li>
+          <li>Custom automations</li>
+          <li>Revenue share reports</li>
+        </ul>
+        <button class="btn btn-ghost price-btn" onclick="startTrial('enterprise')">Start free trial →</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-top:2rem">🔒 Stripe (Global) · Razorpay (India) · 256-bit SSL · PCI-DSS</div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background:var(--bg2);border-top:0.5px solid var(--border2)">
+  <div class="container">
+    <div class="section-eyebrow">What developers say</div>
+    <h2 class="section-title">Built for builders like you</h2>
+    <div class="testimonials">
+      <div class="testi"><div class="testi-text">APPEYE showed me my web page was making more than my app. I had no idea. Restructured everything and doubled revenue in 6 weeks.</div><div class="testi-author"><div class="testi-av">A</div><div><div class="testi-name">Aryan Kapoor</div><div class="testi-role">Flutter Dev · Mumbai</div></div><div class="testi-stars">★★★★★</div></div></div>
+      <div class="testi"><div class="testi-text">Managing 4 apps and 3 websites for clients used to take all day. APPEYE does it in one dashboard. Worth every rupee.</div><div class="testi-author"><div class="testi-av">S</div><div><div class="testi-name">Sneha Rathod</div><div class="testi-role">App Agency · Pune</div></div><div class="testi-stars">★★★★★</div></div></div>
+      <div class="testi"><div class="testi-text">AdMob eCPM went from $1.80 to $5.40 in 3 weeks with Tesla optimizer. Then found a traffic leak on my website. Paid for itself day one.</div><div class="testi-author"><div class="testi-av">R</div><div><div class="testi-name">Rahul Menon</div><div class="testi-role">Solo Dev · Bengaluru</div></div><div class="testi-stars">★★★★★</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<div style="text-align:center;padding:1.5rem 2rem;background:var(--bg2);border-top:0.5px solid var(--border2);border-bottom:0.5px solid var(--border2);position:relative;z-index:1;max-width:100%;overflow:hidden">
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3733978827592455"
+     data-ad-slot="auto"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+<section id="faq" style="border-top:0.5px solid var(--border2)">
+  <div class="container">
+    <div class="section-eyebrow">Questions</div>
+    <h2 class="section-title">Common questions</h2>
+    <div class="faq">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How many apps and websites can I manage?<span class="faq-icon">+</span></div><div class="faq-a">Starter: 1 app + 1 website. Pro: 5 apps + 5 websites. Enterprise: 25 apps + 25 websites. Each gets its own revenue tracking, analytics, SEO monitoring and ad optimization in one unified dashboard.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does web page sales tracking work?<span class="faq-icon">+</span></div><div class="faq-a">You paste one tracking line into your web page — like Google Analytics. APPEYE then monitors every visitor, sale, lead and conversion in real time. No coding knowledge required.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does the 14-day free trial work?<span class="faq-icon">+</span></div><div class="faq-a">Sign up with your email and phone number — no credit card required. You get full access for 14 days. At the end, choose to subscribe or your account pauses. Your data is always safe.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I pay in Indian Rupees?<span class="faq-icon">+</span></div><div class="faq-a">Yes. Indian customers pay in INR via Razorpay — UPI, credit/debit cards, net banking all accepted. International customers pay in USD or CAD via Stripe.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is there a refund policy?<span class="faq-icon">+</span></div><div class="faq-a">APPEYE has a strict no-refund policy. All payments are final once your 14-day trial ends. This is why we offer a generous free trial — so you can test everything before committing. Full policy at appeye.app/terms.html</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I white-label APPEYE for clients?<span class="faq-icon">+</span></div><div class="faq-a">Yes — the Enterprise plan includes white-labeling. Rebrand APPEYE with your agency name and logo and sell it to clients as your own product.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do I need to know coding?<span class="faq-icon">+</span></div><div class="faq-a">No coding required for apps. For web page tracking, you paste one line — like adding Google Analytics. If you built a website, you can do this.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="section-eyebrow" style="text-align:center">Start today</div>
+  <h2 class="cta-title">Give your business<br>the <span>all-seeing eye</span></h2>
+  <p style="font-size:1.1rem;color:var(--text2);max-width:520px;margin:1.5rem auto 3rem;line-height:1.8;font-weight:300;text-align:center">14 days free. No credit card. 25 apps + 25 websites. Cancel any time.</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <button class="btn btn-primary btn-xl" onclick="openModal('signup')">Start free trial — 14 days</button>
+    <button class="btn btn-ghost btn-large" onclick="openModal('login')">I have an account</button>
+  </div>
+  <div class="trust-bar">
+    <div class="trust-item">🔒 256-bit SSL</div>
+    <div class="trust-item">💳 Stripe + Razorpay</div>
+    <div class="trust-item">🇮🇳 INR supported</div>
+    <div class="trust-item">🇨🇦 CAD supported</div>
+    <div class="trust-item">⚡ Tesla 3·6·9</div>
+    <div class="trust-item">❌ Cancel any time</div>
+  </div>
+</div>
+
+<footer>
+  <div class="logo">
+    <svg width="24" height="24" viewBox="0 0 36 36" fill="none"><ellipse cx="18" cy="18" rx="17" ry="10" stroke="#00d4ff" stroke-width="1.2"/><circle cx="18" cy="18" r="4" fill="#00d4ff"/></svg>
+    <div class="logo-name" style="font-size:1rem">APP<span>EYE</span></div>
+  </div>
+  <div class="footer-links">
+    <a href="terms.html">Privacy & Terms</a>
+    <a href="terms.html#refund">Refund Policy</a>
+    <a href="APPEYE_Signup.html">Sign Up</a>
+    <a href="mailto:support@appeye.app">Support</a>
+  </div>
+  <div>© 2026 APPEYE · appeye.app · One Eye. Every App. Every Page. · v3.6.9</div>
+</footer>
+
+<!-- Region Banner -->
+<div class="region-banner" id="regionBanner"><span id="regionFlag">🌍</span><span id="regionText">Detecting region…</span></div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('login')">✕</button>
+    <div class="modal-title">Welcome back</div>
+    <div class="modal-sub">Sign in to your APPEYE dashboard</div>
+    <div id="loginMsg" class="msg"></div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="loginEmail" type="email" placeholder="you@example.com"></div>
+    <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="loginPass" type="password" placeholder="••••••••"></div>
+    <button class="btn btn-primary" id="loginBtn" style="width:100%;padding:14px;font-size:15px;border-radius:10px" onclick="handleLogin()">Sign in →</button>
+    <div class="modal-footer">No account? <a onclick="switchModal('signup')">Start free trial</a></div>
+  </div>
+</div>
+
+<!-- SIGNUP MODAL -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signup')">✕</button>
+    <div id="step1">
+      <div class="modal-title">Start free trial</div>
+      <div class="modal-sub">14 days free · No credit card · Cancel any time</div>
+      <div id="signupMsg" class="msg"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">First name</label><input class="form-input" id="firstName" type="text" placeholder="Snehankit"></div>
+        <div class="form-group"><label class="form-label">Last name</label><input class="form-input" id="lastName" type="text" placeholder="Patil"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="signupEmail" type="email" placeholder="you@example.com"></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="signupPass" type="password" placeholder="Min 8 characters"></div>
+      <div class="form-group">
+        <label class="form-label">Plan</label>
+        <select class="form-input" id="planSelect" onchange="updatePlanSummary()">
+          <option value="starter">Starter — ₹999/mo · 1 app + 1 website</option>
+          <option value="pro" selected>Pro — ₹2,499/mo · 5 apps + 5 websites ⚡</option>
+          <option value="enterprise">Enterprise — ₹9,999/mo · 25 apps + 25 websites</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" style="width:100%;padding:14px;font-size:15px;border-radius:10px" onclick="goToPayment()">Continue to payment →</button>
+      <div style="text-align:center;margin-top:1rem;font-family:'DM Mono',monospace;font-size:10px;color:var(--text3)">🔒 No charge for 14 days · OTP phone verification required</div>
+      <div class="modal-footer">Have an account? <a onclick="switchModal('login')">Sign in</a></div>
+    </div>
+    <div id="step2" style="display:none">
+      <button onclick="backToStep1()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;margin-bottom:1rem;padding:0">← Back</button>
+      <div class="modal-title">Choose payment</div>
+      <div class="modal-sub">14-day free trial. No charge today.</div>
+      <div class="plan-summary" id="planSummaryBox">
+        <div><div class="plan-summary-name" id="summaryName">Pro Plan</div><div class="plan-summary-trial">14 days FREE, then monthly</div></div>
+        <div class="plan-summary-price" id="summaryPrice">₹2,499/mo</div>
+      </div>
+      <div id="payMsg" class="msg"></div>
+      <!-- Consent -->
+      <div class="consent-box">
+        <div class="consent-title">⚠ READ AND AGREE BEFORE PAYMENT</div>
+        <div class="consent-item" onclick="toggleC(1)"><div class="consent-cb" id="cc1"></div><div class="consent-text"><strong>NO REFUNDS.</strong> All payments are final once trial ends. No exceptions. <a href="terms.html#refund" target="_blank">Read policy</a></div></div>
+        <div class="consent-item" onclick="toggleC(2)"><div class="consent-cb" id="cc2"></div><div class="consent-text">Trial auto-converts to paid unless I cancel before it ends.</div></div>
+        <div class="consent-item" onclick="toggleC(3)"><div class="consent-cb" id="cc3"></div><div class="consent-text">I accept <a href="terms.html" target="_blank">Terms of Service</a> and <a href="terms.html#privacy" target="_blank">Privacy Policy</a>. I am 18+.</div></div>
+      </div>
+      <div class="pay-tabs">
+        <button class="pay-tab active" id="tabStripe" onclick="selectPayTab('stripe')">💳 Stripe (Global)</button>
+        <button class="pay-tab" id="tabRazorpay" onclick="selectPayTab('razorpay')">🇮🇳 Razorpay (India)</button>
+      </div>
+      <div id="panelStripe">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:1rem">Visa · Mastercard · Amex · <strong style="color:var(--text2)" id="stripeLabel">USD</strong></div>
+        <button class="stripe-btn" id="stripeBtn" onclick="handleStripeCheckout()">💳 Pay with Stripe</button>
+      </div>
+      <div id="panelRazorpay" style="display:none">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:1rem">UPI · Net Banking · Cards · Wallets · <strong style="color:var(--text2)">INR</strong></div>
+        <button class="rzp-btn" id="rzpBtn" onclick="handleRazorpayCheckout()">🇮🇳 Pay with Razorpay</button>
+      </div>
+      <div class="secure-badge">🔒 256-bit SSL · PCI-DSS · Cancel any time</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHATBOT -->
+<div class="chat-bubble" id="chatBubble" onclick="toggleChat()">
+  <span id="bubbleIcon" style="font-size:1.4rem">👁</span>
+  <div class="chat-badge" id="chatBadge">1</div>
+</div>
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="chat-avatar">👁</div>
+    <div style="flex:1">
+      <div class="chat-header-name">APPEYE Assistant</div>
+      <div class="chat-header-status"><div class="status-dot"></div>Online · Replies instantly</div>
+    </div>
+    <button onclick="toggleChat()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:1rem">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="quick-replies" id="quickReplies">
+    <div class="qr" onclick="sendQuick('💰 Pricing')">💰 Pricing</div>
+    <div class="qr" onclick="sendQuick('🆓 Free trial')">🆓 Free trial</div>
+    <div class="qr" onclick="sendQuick('⚠ Refund policy')">⚠ Refund policy</div>
+    <div class="qr" onclick="sendQuick('⚡ Features')">⚡ Features</div>
+    <div class="qr" onclick="sendQuick('📱 OTP help')">📱 OTP help</div>
+    <div class="qr" onclick="sendQuick('🛟 Support')">🛟 Support</div>
+  </div>
+  <div class="chat-input-area">
+    <textarea class="chat-input" id="chatInput" placeholder="Ask anything about APPEYE…" rows="1" onkeydown="chatKey(event)" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,60)+'px'"></textarea>
+    <button class="send-btn" onclick="sendChatMessage()">↑</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// REAL KEYS — STRIPE + RAZORPAY
+// ═══════════════════════════════════════
+const CONFIG = {
+  // STRIPE
+  stripePublishableKey: 'pk_test_51TdNveP09i7fTDcYYZ70WLOGW4Y560pb3PeukoswbKHN2cjMmjYF3diJU0ksRNXUPHwaTnWUlcIilBUVIa4a5seW00i6EgF1yW',
+  stripeLinks: {
+    starter:    'https://buy.stripe.com/test_8x228t1jcgK7714aDU1B600',
+    pro:        'https://buy.stripe.com/test_eVqaEZ5zs1Pd9tc5jA1B601',
+    enterprise: 'https://buy.stripe.com/test_7sY7sN1jcctRaxg6nE1B602',
+  },
+  // RAZORPAY
+  razorpayKeyId: 'rzp_test_SvpUYGA16TbUFk',
+  razorpayPlans: {
+    starter:    'plan_SwPgdKtw0NkguD',
+    pro:        'plan_SwFiBex8y1D9wx',
+    enterprise: 'plan_SwFk5xZieaFBOp',
+  },
+  // GOOGLE SHEET
+  sheetId: '1x5fGi6Ms7RtNeOqX8bH2c9oJC1VOz2_Sj8U-edfNu1Q',
+  appsScriptUrl: 'YOUR_APPS_SCRIPT_WEB_APP_URL',
+};
+
+const PRICING = {
+  INR:{sym:'₹',s:'999',p:'2,499',e:'9,999',as:'≈ $12 USD / $16 CAD',ap:'≈ $29 USD / $40 CAD',ae:'≈ $119 USD / $162 CAD'},
+  USD:{sym:'$',s:'12',p:'29',e:'119',as:'≈ ₹999 INR / $16 CAD',ap:'≈ ₹2,499 INR / $40 CAD',ae:'≈ ₹9,999 INR / $119 USD'},
+  CAD:{sym:'$',s:'16',p:'40',e:'162',as:'≈ ₹999 INR / $12 USD',ap:'≈ ₹2,499 INR / $29 USD',ae:'≈ ₹9,999 INR / $119 USD'},
+};
+const PLAN_NAMES={starter:'Starter',pro:'Pro',enterprise:'Enterprise'};
+let activeCurrency='INR',selectedPlan='pro',activePayTab='stripe';
+let consents={1:false,2:false,3:false};
+let chatOpen=false,chatTyping=false;
+
+// Currency
+function setCurrency(c){
+  activeCurrency=c;const d=PRICING[c];
+  ['s','p','e'].forEach(x=>{
+    document.getElementById('c'+x).textContent=d.sym;
+    document.getElementById('p'+x).textContent=d[x];
+    document.getElementById('a'+x).textContent=d['a'+x];
+  });
+  ['INR','USD','CAD'].forEach(x=>document.getElementById('btn'+x).classList.toggle('active',x===c));
+  updatePlanSummary();
+  if(c==='INR')selectPayTab('razorpay');
+  else{selectPayTab('stripe');document.getElementById('stripeLabel').textContent=c;}
+}
+
+function updatePlanSummary(){
+  const plan=document.getElementById('planSelect')?.value||selectedPlan;
+  selectedPlan=plan;const d=PRICING[activeCurrency];
+  const prices={starter:d.s,pro:d.p,enterprise:d.e};
+  document.getElementById('summaryName').textContent=PLAN_NAMES[plan]+' Plan';
+  document.getElementById('summaryPrice').textContent=d.sym+prices[plan]+'/mo';
+}
+
+function selectPayTab(tab){
+  activePayTab=tab;
+  document.getElementById('tabStripe').classList.toggle('active',tab==='stripe');
+  document.getElementById('tabRazorpay').classList.toggle('active',tab==='razorpay');
+  document.getElementById('panelStripe').style.display=tab==='stripe'?'block':'none';
+  document.getElementById('panelRazorpay').style.display=tab==='razorpay'?'block':'none';
+}
+
+// Modals
+function openModal(t){document.getElementById(t+'Modal').classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(t){
+  document.getElementById(t+'Modal').classList.remove('open');document.body.style.overflow='';
+  if(t==='signup'){document.getElementById('step1').style.display='block';document.getElementById('step2').style.display='none';}
+}
+function switchModal(to){closeModal(to==='login'?'signup':'login');setTimeout(()=>openModal(to),200)}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m){m.classList.remove('open');document.body.style.overflow=''}}));
+
+function startTrial(plan){
+  selectedPlan=plan;openModal('signup');
+  setTimeout(()=>{const s=document.getElementById('planSelect');if(s){s.value=plan;updatePlanSummary();}},100);
+}
+
+function goToPayment(){
+  const msg=document.getElementById('signupMsg');
+  const email=document.getElementById('signupEmail').value.trim();
+  const pass=document.getElementById('signupPass').value;
+  const first=document.getElementById('firstName').value.trim();
+  if(!first){showMsg(msg,'error','Please enter your first name.');return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showMsg(msg,'error','Please enter a valid email.');return;}
+  if(pass.length<8){showMsg(msg,'error','Password must be at least 8 characters.');return;}
+  selectedPlan=document.getElementById('planSelect').value;
+  updatePlanSummary();
+  if(activeCurrency==='INR')selectPayTab('razorpay');else selectPayTab('stripe');
+  document.getElementById('step1').style.display='none';
+  document.getElementById('step2').style.display='block';
+}
+function backToStep1(){document.getElementById('step1').style.display='block';document.getElementById('step2').style.display='none';}
+
+// Consent
+function toggleC(n){
+  consents[n]=!consents[n];
+  const cb=document.getElementById('cc'+n);
+  cb.classList.toggle('checked',consents[n]);
+  cb.innerHTML=consents[n]?'<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#04050a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>':'';
+}
+
+function checkConsents(){
+  if(!consents[1]||!consents[2]||!consents[3]){
+    showMsg(document.getElementById('payMsg'),'error','⚠ Please tick all consent boxes above.');
+    return false;
+  }
+  return true;
+}
+
+// Stripe
+function handleStripeCheckout(){
+  if(!checkConsents())return;
+  const btn=document.getElementById('stripeBtn');
+  const msg=document.getElementById('payMsg');
+  const email=document.getElementById('signupEmail').value.trim();
+  const link=CONFIG.stripeLinks[selectedPlan];
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Redirecting…';
+  const url=link+'?prefilled_email='+encodeURIComponent(email);
+  saveToSheet({email,plan:selectedPlan,currency:activeCurrency,method:'stripe',ts:new Date().toISOString()});
+  setTimeout(()=>{window.location.href=url;},500);
+}
+
+// Razorpay
+function handleRazorpayCheckout(){
+  if(!checkConsents())return;
+  const btn=document.getElementById('rzpBtn');
+  const msg=document.getElementById('payMsg');
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Opening…';
+  if(typeof Razorpay==='undefined'){
+    const s=document.createElement('script');s.src='https://checkout.razorpay.com/v1/checkout.js';
+    s.onload=()=>launchRzp(btn,msg);s.onerror=()=>{showMsg(msg,'error','Could not load Razorpay. Try Stripe.');btn.disabled=false;btn.innerHTML='🇮🇳 Pay with Razorpay';};
+    document.head.appendChild(s);
+  } else launchRzp(btn,msg);
+}
+
+function launchRzp(btn,msg){
+  const email=document.getElementById('signupEmail').value.trim();
+  const first=document.getElementById('firstName').value.trim();
+  const last=document.getElementById('lastName').value.trim();
+  const opts={
+    key:CONFIG.razorpayKeyId,
+    subscription_id:CONFIG.razorpayPlans[selectedPlan],
+    name:'APPEYE',description:PLAN_NAMES[selectedPlan]+' Plan — 14-day free trial',
+    prefill:{name:first+' '+last,email},
+    theme:{color:'#00d4ff'},
+    handler:function(r){
+      btn.disabled=false;btn.innerHTML='✓ Complete!';
+      showMsg(msg,'success','✓ Trial started! Check your email for dashboard access.');
+      saveToSheet({email,plan:selectedPlan,currency:'INR',method:'razorpay',paymentId:r.razorpay_payment_id,ts:new Date().toISOString()});
+      setTimeout(()=>closeModal('signup'),2000);
+    },
+    modal:{ondismiss:function(){btn.disabled=false;btn.innerHTML='🇮🇳 Pay with Razorpay';}}
+  };
+  try{new Razorpay(opts).open();}catch(e){showMsg(msg,'error','Could not open Razorpay. Try Stripe.');btn.disabled=false;btn.innerHTML='🇮🇳 Pay with Razorpay';}
+}
+
+function saveToSheet(data){
+  if(CONFIG.appsScriptUrl==='YOUR_APPS_SCRIPT_WEB_APP_URL')return;
+  fetch(CONFIG.appsScriptUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'signup',data})}).catch(()=>{});
+}
+
+function handleLogin(){
+  const msg=document.getElementById('loginMsg');
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email){showMsg(msg,'error','Please enter your email.');return;}
+  if(!pass){showMsg(msg,'error','Please enter your password.');return;}
+  showMsg(msg,'error','⚙️ Auth not connected yet. Please use the signup page for now.');
+}
+
+function showMsg(el,type,text){el.className='msg '+type+' show';el.textContent=text;}
+function toggleFaq(el){
+  const a=el.nextElementSibling;const i=el.querySelector('.faq-icon');const open=a.classList.contains('open');
+  document.querySelectorAll('.faq-a.open').forEach(x=>{x.classList.remove('open');x.previousElementSibling.querySelector('.faq-icon').textContent='+';});
+  if(!open){a.classList.add('open');i.textContent='−';}
+}
+
+// Chart
+const pc=document.getElementById('previewChart');
+if(pc){const h=[30,45,38,60,42,55,70,48,65,80,55,72,90,68,85,78,95,72,88,100];pc.innerHTML=h.map((v,i)=>`<div style="flex:1;height:${v}%;background:${i%3===0?'rgba(0,212,255,0.6)':i%3===1?'rgba(167,139,250,0.4)':'rgba(245,200,66,0.3)'};border-radius:3px 3px 0 0"></div>`).join('');}
+
+// Geo
+async function detectRegion(){
+  try{
+    const r=await fetch('https://ipapi.co/json/',{signal:AbortSignal.timeout(3000)});
+    const d=await r.json();const b=document.getElementById('regionBanner');
+    if(d.country_code==='IN'){document.getElementById('regionFlag').textContent='🇮🇳';document.getElementById('regionText').textContent='India detected — INR & Razorpay';setCurrency('INR');}
+    else if(d.country_code==='CA'){document.getElementById('regionFlag').textContent='🇨🇦';document.getElementById('regionText').textContent='Canada detected — CAD & Stripe';setCurrency('CAD');}
+    else{document.getElementById('regionFlag').textContent='🌍';document.getElementById('regionText').textContent=(d.country_name||'International')+' — USD & Stripe';setCurrency('USD');}
+    b.classList.add('show');setTimeout(()=>b.classList.remove('show'),4000);
+  }catch(e){}
+}
+
+// Scroll animations
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.style.opacity='1';x.target.style.transform='translateY(0)'}})},{threshold:0.08});
+document.querySelectorAll('.feat,.tesla-card,.principle,.revenue-card,.price-card,.testi,.faq-item,.pillar').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition='opacity 0.6s ease,transform 0.6s ease';obs.observe(el);});
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>{m.classList.remove('open');document.body.style.overflow='';});});
+detectRegion();updatePlanSummary();
+
+// ═══════════════════════════════════════
+// CHATBOT
+// ═══════════════════════════════════════
+function toggleChat(){
+  chatOpen=!chatOpen;
+  document.getElementById('chatWindow').classList.toggle('open',chatOpen);
+  document.getElementById('bubbleIcon').textContent=chatOpen?'✕':'👁';
+  if(chatOpen){
+    document.getElementById('chatBadge').style.display='none';
+    if(document.getElementById('chatMessages').children.length===0)addBotMsg(getWelcomeMsg());
+    scrollChat();
+  }
+}
+
+function getWelcomeMsg(){
+  return '👁 Hi! I\'m the APPEYE AI assistant.\n\nI can help with:\n• Pricing & plans\n• Free trial info\n• OTP issues\n• Refund policy\n• Features\n• Account support\n\nWhat would you like to know?';
+}
+
+function sendQuick(text){document.getElementById('chatInput').value=text;sendChatMessage();}
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChatMessage();}}
+
+function sendChatMessage(){
+  const input=document.getElementById('chatInput');
+  const msg=input.value.trim();
+  if(!msg||chatTyping)return;
+  addUserMsg(msg);input.value='';input.style.height='auto';
+  chatTyping=true;
+  const tid=showTyping();
+  setTimeout(()=>{removeTyping(tid);addBotMsg(getChatResponse(msg));chatTyping=false;},800+Math.random()*400);
+}
+
+function getChatResponse(msg){
+  const m=msg.toLowerCase();
+  if(m.match(/price|cost|plan|₹|inr|usd|cad|pay|subscription|fee|charge/))
+    return '💰 APPEYE Plans:\n\n• Starter: ₹999/mo — 1 app + 1 website\n• Pro: ₹2,499/mo — 5 apps + 5 websites ⚡\n• Enterprise: ₹9,999/mo — 25 apps + 25 websites\n\n✅ All plans: 14-day FREE trial\n💳 Pay with Razorpay (INR) or Stripe (USD/CAD)';
+  if(m.match(/refund|money back|return|chargeback/))
+    return '⚠️ APPEYE has a STRICT NO REFUND policy.\n\nAll payments are FINAL once your 14-day trial ends.\n\n❌ No refunds for:\n• Forgetting to cancel\n• Not using the service\n• Changing your mind\n\n✅ Just cancel BEFORE trial ends to avoid charges.\n\nFull policy: appeye.app/terms.html';
+  if(m.match(/trial|free|14/))
+    return '🆓 Free Trial:\n\n✅ 14 days completely FREE\n✅ No credit card required\n✅ Full access to all features\n✅ Cancel before trial ends — no charge\n\n⚠️ After 14 days auto-converts to paid.\n\nStart now: appeye.app';
+  if(m.match(/otp|phone|sms|verif|code/))
+    return '📱 OTP Help:\n\n1. Check phone number + country code\n2. Wait 60 seconds for SMS\n3. Check spam/messages folder\n4. OTP valid for 5 minutes\n5. Click Resend after 30 seconds\n\nStill stuck? Email:\nsupport@appeye.app';
+  if(m.match(/feature|admob|adsense|seo|app|website|web|revenue|dashboard/))
+    return '⚡ APPEYE Features:\n\n📱 Apps (up to 25):\n• AdMob tracking + Tesla optimizer\n• Razorpay payments\n• Play Store SEO\n• User analytics\n\n🌐 Websites (up to 25):\n• Sales + conversion tracking\n• AdSense revenue\n• Web SEO rankings\n• Traffic analytics\n\n🔄 Both:\n• 9 revenue streams\n• 9 automations\n• 20+ languages\n• Google Sheets integration';
+  if(m.match(/hello|hi|hey|namaste|hola|bonjour/))
+    return '👁 Hello! Welcome to APPEYE.\n\nI can answer questions about pricing, features, OTP, refund policy and account support.\n\nWhat would you like to know?';
+  if(m.match(/support|help|issue|problem|contact/))
+    return '🛟 Support Options:\n\n1. Ask me here — instant answers\n2. Email: support@appeye.app\n   (24hr response)\n3. Submit ticket in your dashboard\n\nWhat specific issue are you facing?';
+  if(m.match(/language|hindi|tamil|spanish|french|arabic/))
+    return '🌍 APPEYE supports 20+ languages:\n\n🇮🇳 Indian: Hindi, Tamil, Telugu, Kannada, Bengali, Marathi, Gujarati, Punjabi, Malayalam, Urdu\n\n🌍 Global: English, Spanish, French, Arabic, Chinese, Japanese, Korean, German, Portuguese, Russian\n\nAuto-detects your browser language!';
+  if(m.match(/25|enterprise|unlimited|white.*label/))
+    return '🏢 Enterprise Plan (₹9,999/mo):\n\n• 25 apps + 25 websites\n• White-label APPEYE\n• Custom branding\n• API access\n• Dedicated support\n• Custom automations\n• Revenue share reports\n\n14-day FREE trial included!';
+  return '👁 I can help with:\n\n💰 Pricing & plans\n🆓 Free trial details\n⚠️ Refund policy\n⚡ Features\n📱 OTP issues\n🛟 Support\n🌍 Languages\n\nOr email: support@appeye.app\n\nWhat do you need?';
+}
+
+function addBotMsg(text){
+  const div=document.createElement('div');div.className='msg-row';
+  div.innerHTML=`<div class="msg-av">👁</div><div class="msg-bubble bot">${esc(text)}</div>`;
+  document.getElementById('chatMessages').appendChild(div);scrollChat();
+}
+function addUserMsg(text){
+  const div=document.createElement('div');div.className='msg-row user';
+  div.innerHTML=`<div class="msg-av u">👤</div><div class="msg-bubble user">${esc(text)}</div>`;
+  document.getElementById('chatMessages').appendChild(div);scrollChat();
+}
+function showTyping(){
+  const id='t'+Date.now();const div=document.createElement('div');div.className='msg-row';div.id=id;
+  div.innerHTML=`<div class="msg-av">👁</div><div class="msg-bubble bot"><div class="typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+  document.getElementById('chatMessages').appendChild(div);scrollChat();return id;
+}
+function removeTyping(id){document.getElementById(id)?.remove();}
+function scrollChat(){const m=document.getElementById('chatMessages');setTimeout(()=>{m.scrollTop=m.scrollHeight;},50);}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+</script>
+</body>
+</html>
