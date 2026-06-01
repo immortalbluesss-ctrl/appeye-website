@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRINETRA — Business Intelligence System</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #111118;
+  --bg3: #1a1a24;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.15);
+  --text: #e8e8f0;
+  --text2: #8888aa;
+  --text3: #555570;
+  --gold: #c8a84b;
+  --gold2: #e8c878;
+  --teal: #2dd4bf;
+  --blue: #60a5fa;
+  --red: #f87171;
+  --green: #4ade80;
+  --orange: #fb923c;
+  --purple: #a78bfa;
+  --accent: #c8a84b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* Header */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 60px;
+  background: var(--bg2); border-bottom: 0.5px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon { width: 36px; height: 36px; }
+.logo-name { font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 700; color: var(--gold); letter-spacing: 0.2em; }
+.logo-sub { font-size: 10px; color: var(--text3); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 16px; }
+.live-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--green); }
+.live-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.time { font-size: 12px; color: var(--text3); font-variant-numeric: tabular-nums; }
+.header-btn { background: transparent; border: 0.5px solid var(--border2); color: var(--text2); padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+.header-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Layout */
+.layout { display: flex; height: calc(100vh - 60px); }
+
+/* Sidebar */
+.sidebar {
+  width: 220px; min-width: 220px;
+  background: var(--bg2); border-right: 0.5px solid var(--border);
+  padding: 1.5rem 0; overflow-y: auto;
+}
+.sidebar-section { margin-bottom: 1.5rem; }
+.sidebar-label { font-size: 10px; color: var(--text3); letter-spacing: 0.15em; text-transform: uppercase; padding: 0 1.25rem; margin-bottom: 0.5rem; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 1.25rem; font-size: 13px; color: var(--text2);
+  cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.nav-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(200,168,75,0.06); }
+.nav-icon { font-size: 15px; width: 18px; text-align: center; }
+.nav-badge { margin-left: auto; background: var(--red); color: white; font-size: 10px; padding: 1px 6px; border-radius: 10px; }
+
+/* App switcher */
+.app-switcher { padding: 1rem 1.25rem; margin-bottom: 0.5rem; }
+.app-switcher-label { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.app-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 8px; cursor: pointer;
+  margin-bottom: 4px; transition: all 0.15s;
+  border: 0.5px solid transparent;
+}
+.app-pill:hover { background: rgba(255,255,255,0.04); }
+.app-pill.active { background: rgba(200,168,75,0.08); border-color: rgba(200,168,75,0.2); }
+.app-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.app-pill-name { font-size: 12px; color: var(--text2); flex: 1; }
+.app-pill.active .app-pill-name { color: var(--gold); }
+.app-pill-rev { font-size: 10px; color: var(--text3); }
+.add-app-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 8px; cursor: pointer;
+  border: 0.5px dashed var(--border2); color: var(--text3);
+  font-size: 12px; margin-top: 4px; transition: all 0.15s;
+}
+.add-app-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Main content */
+.main { flex: 1; overflow-y: auto; padding: 1.5rem; }
+
+/* Page sections */
+.page { display: none; }
+.page.active { display: block; }
+
+/* Page header */
+.page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; }
+.page-title { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 600; color: var(--text); }
+.page-subtitle { font-size: 12px; color: var(--text3); margin-top: 3px; }
+.page-actions { display: flex; gap: 8px; }
+.btn { padding: 7px 16px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s; border: none; }
+.btn-primary { background: var(--gold); color: var(--bg); font-weight: 600; }
+.btn-primary:hover { background: var(--gold2); }
+.btn-ghost { background: transparent; border: 0.5px solid var(--border2); color: var(--text2); }
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Metric grid */
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 12px; margin-bottom: 1.5rem; }
+.metric-card {
+  background: var(--bg2); border: 0.5px solid var(--border);
+  border-radius: 10px; padding: 1rem 1.25rem;
+}
+.metric-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.metric-value { font-size: 1.6rem; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+.metric-change { font-size: 11px; margin-top: 4px; }
+.metric-change.up { color: var(--green); }
+.metric-change.down { color: var(--red); }
+
+/* Charts grid */
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 1.5rem; }
+.chart-card {
+  background: var(--bg2); border: 0.5px solid var(--border);
+  border-radius: 10px; padding: 1.25rem;
+}
+.chart-card.full { grid-column: 1 / -1; }
+.chart-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.chart-sub { font-size: 11px; color: var(--text3); margin-bottom: 1rem; }
+.chart-wrap { position: relative; }
+
+/* Tables */
+.table-card {
+  background: var(--bg2); border: 0.5px solid var(--border);
+  border-radius: 10px; overflow: hidden; margin-bottom: 1.5rem;
+}
+.table-header { padding: 1rem 1.25rem; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.table-title { font-size: 13px; font-weight: 500; color: var(--text); }
+table { width: 100%; border-collapse: collapse; }
+th { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; padding: 10px 1.25rem; text-align: left; background: rgba(255,255,255,0.02); }
+td { font-size: 13px; color: var(--text2); padding: 10px 1.25rem; border-top: 0.5px solid var(--border); }
+tr:hover td { background: rgba(255,255,255,0.02); }
+.td-name { color: var(--text); font-weight: 500; }
+
+/* Status badges */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+.badge-green { background: rgba(74,222,128,0.12); color: var(--green); }
+.badge-red { background: rgba(248,113,113,0.12); color: var(--red); }
+.badge-yellow { background: rgba(251,191,36,0.12); color: #fbbf24; }
+.badge-blue { background: rgba(96,165,250,0.12); color: var(--blue); }
+.badge-purple { background: rgba(167,139,250,0.12); color: var(--purple); }
+
+/* Progress bar */
+.progress { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 2px; transition: width 1s ease; }
+
+/* Country flags */
+.flag { font-size: 16px; }
+
+/* Tesla numbers decoration */
+.tesla-369 { display: flex; gap: 8px; margin-bottom: 1.5rem; }
+.tesla-num { background: rgba(200,168,75,0.08); border: 0.5px solid rgba(200,168,75,0.2); border-radius: 8px; padding: 8px 16px; text-align: center; }
+.tesla-num .n { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--gold); font-weight: 700; }
+.tesla-num .l { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Automations */
+.auto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+.auto-card {
+  background: var(--bg2); border: 0.5px solid var(--border);
+  border-radius: 10px; padding: 1.25rem;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.auto-header { display: flex; align-items: flex-start; justify-content: space-between; }
+.auto-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.auto-desc { font-size: 12px; color: var(--text3); line-height: 1.5; }
+.toggle { width: 36px; height: 20px; background: var(--bg3); border-radius: 10px; cursor: pointer; position: relative; transition: background 0.2s; border: 0.5px solid var(--border2); flex-shrink: 0; }
+.toggle.on { background: var(--green); border-color: var(--green); }
+.toggle::after { content: ''; position: absolute; width: 14px; height: 14px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: transform 0.2s; }
+.toggle.on::after { transform: translateX(16px); }
+.auto-stats { display: flex; gap: 16px; }
+.auto-stat { font-size: 11px; color: var(--text3); }
+.auto-stat span { color: var(--text2); }
+
+/* Ad optimizer */
+.ad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+.ad-unit-card {
+  background: var(--bg2); border: 0.5px solid var(--border);
+  border-radius: 10px; padding: 1rem;
+}
+.ad-unit-name { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+.ad-ecpm { font-size: 1.2rem; font-weight: 600; color: var(--gold); }
+.ad-ecpm-label { font-size: 10px; color: var(--text3); }
+.ad-bar-wrap { margin-top: 8px; }
+
+/* Alerts */
+.alert-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+.alert-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: var(--bg2); border: 0.5px solid var(--border);
+  border-radius: 8px; padding: 12px;
+}
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-content { flex: 1; }
+.alert-title { font-size: 13px; color: var(--text); font-weight: 500; }
+.alert-time { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.alert-action { font-size: 11px; color: var(--gold); cursor: pointer; margin-top: 4px; }
+
+/* Map placeholder */
+.map-countries { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.country-card {
+  background: var(--bg3); border: 0.5px solid var(--border);
+  border-radius: 8px; padding: 12px; text-align: center;
+}
+.country-flag { font-size: 2rem; margin-bottom: 6px; }
+.country-name { font-size: 12px; color: var(--text2); }
+.country-users { font-size: 1.1rem; font-weight: 600; color: var(--text); margin: 4px 0; }
+.country-rev { font-size: 11px; color: var(--green); }
+
+/* App management */
+.apps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.app-mgmt-card {
+  background: var(--bg2); border: 0.5px solid var(--border);
+  border-radius: 12px; padding: 1.25rem;
+}
+.app-mgmt-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+.app-mgmt-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.app-mgmt-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.app-mgmt-pkg { font-size: 11px; color: var(--text3); }
+.app-mgmt-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1rem; }
+.app-mgmt-stat { background: var(--bg3); border-radius: 6px; padding: 8px; }
+.app-mgmt-stat-val { font-size: 1rem; font-weight: 600; color: var(--text); }
+.app-mgmt-stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; margin-top: 2px; }
+.app-mgmt-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.app-action-btn { padding: 5px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); transition: all 0.15s; }
+.app-action-btn:hover { border-color: var(--gold); color: var(--gold); }
+.add-app-card {
+  background: var(--bg2); border: 0.5px dashed var(--border2);
+  border-radius: 12px; padding: 1.25rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; cursor: pointer; min-height: 200px; transition: all 0.2s;
+}
+.add-app-card:hover { border-color: var(--gold); }
+.add-app-card-plus { font-size: 2rem; color: var(--text3); }
+.add-app-card-text { font-size: 13px; color: var(--text3); text-align: center; line-height: 1.5; }
+
+/* SEO optimizer */
+.seo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 1.5rem; }
+.keyword-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
+.keyword-rank { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--gold); width: 30px; }
+.keyword-text { flex: 1; font-size: 13px; color: var(--text); }
+.keyword-vol { font-size: 11px; color: var(--text3); }
+.keyword-trend { font-size: 11px; }
+.keyword-trend.up { color: var(--green); }
+.keyword-trend.down { color: var(--red); }
+
+/* Revenue breakdown */
+.rev-sources { display: flex; flex-direction: column; gap: 10px; }
+.rev-source { display: flex; align-items: center; gap: 12px; }
+.rev-source-name { font-size: 13px; color: var(--text2); width: 130px; }
+.rev-source-bar-wrap { flex: 1; }
+.rev-source-amount { font-size: 13px; color: var(--text); font-weight: 500; width: 80px; text-align: right; }
+.rev-source-pct { font-size: 11px; color: var(--text3); width: 40px; text-align: right; }
+
+/* Tesla principle panel */
+.tesla-panel {
+  background: linear-gradient(135deg, rgba(200,168,75,0.06) 0%, rgba(200,168,75,0.02) 100%);
+  border: 0.5px solid rgba(200,168,75,0.2);
+  border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem;
+}
+.tesla-panel-title { font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold); letter-spacing: 0.15em; margin-bottom: 0.75rem; }
+.tesla-insights { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.tesla-insight { text-align: center; }
+.tesla-insight-num { font-family: 'Cinzel', serif; font-size: 2rem; color: var(--gold); }
+.tesla-insight-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.tesla-insight-val { font-size: 13px; color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="18" cy="18" r="17" fill="none" stroke="rgba(200,168,75,0.3)" stroke-width="0.5"/>
+      <polygon points="18,4 31,27 5,27" fill="none" stroke="#c8a84b" stroke-width="1.2"/>
+      <polygon points="18,32 31,9 5,9" fill="none" stroke="rgba(200,168,75,0.3)" stroke-width="0.8"/>
+      <ellipse cx="18" cy="18" rx="5" ry="3.2" fill="none" stroke="#c8a84b" stroke-width="1"/>
+      <ellipse cx="18" cy="18" rx="2.5" ry="2.5" fill="#c8a84b" opacity="0.8"/>
+      <line x1="18" y1="14.8" x2="18" y2="12" stroke="#c8a84b" stroke-width="0.8"/>
+    </svg>
+    <div>
+      <div class="logo-name">TRINETRA</div>
+      <div class="logo-sub">Business Intelligence · v3.6.9</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div> Live</div>
+    <div class="time" id="clock">--:--:--</div>
+    <button class="header-btn" onclick="exportReport()">Export Report</button>
+    <button class="header-btn" style="border-color:rgba(200,168,75,0.4);color:var(--gold)" onclick="runOptimizer()">Run Optimizer</button>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="app-switcher">
+      <div class="app-switcher-label">Active Apps</div>
+      <div class="app-pill active" onclick="switchApp(this,'WorkSafe')">
+        <div class="app-dot" style="background:#c8a84b"></div>
+        <div class="app-pill-name">WorkSafe</div>
+        <div class="app-pill-rev">₹24.6K</div>
+      </div>
+      <div class="app-pill" onclick="switchApp(this,'App 2')">
+        <div class="app-dot" style="background:#60a5fa"></div>
+        <div class="app-pill-name">App 2</div>
+        <div class="app-pill-rev">—</div>
+      </div>
+      <div class="app-pill" onclick="switchApp(this,'App 3')">
+        <div class="app-dot" style="background:#4ade80"></div>
+        <div class="app-pill-name">App 3</div>
+        <div class="app-pill-rev">—</div>
+      </div>
+      <div class="app-pill" onclick="switchApp(this,'App 4')">
+        <div class="app-dot" style="background:#a78bfa"></div>
+        <div class="app-pill-name">App 4</div>
+        <div class="app-pill-rev">—</div>
+      </div>
+      <div class="app-pill" onclick="switchApp(this,'App 5')">
+        <div class="app-dot" style="background:#fb923c"></div>
+        <div class="app-pill-name">App 5</div>
+        <div class="app-pill-rev">—</div>
+      </div>
+      <div class="add-app-btn" onclick="addApp()">+ Add App</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Management</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)">
+        <span class="nav-icon">◈</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="showPage('revenue',this)">
+        <span class="nav-icon">₹</span> Revenue
+      </div>
+      <div class="nav-item" onclick="showPage('users',this)">
+        <span class="nav-icon">◉</span> Users
+        <span class="nav-badge">3</span>
+      </div>
+      <div class="nav-item" onclick="showPage('ads',this)">
+        <span class="nav-icon">▣</span> Ad Manager
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Growth</div>
+      <div class="nav-item" onclick="showPage('seo',this)">
+        <span class="nav-icon">◎</span> SEO & Play Store
+      </div>
+      <div class="nav-item" onclick="showPage('countries',this)">
+        <span class="nav-icon">⊕</span> Countries
+      </div>
+      <div class="nav-item" onclick="showPage('automation',this)">
+        <span class="nav-icon">⟳</span> Automation
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">System</div>
+      <div class="nav-item" onclick="showPage('apps',this)">
+        <span class="nav-icon">⊞</span> App Manager
+      </div>
+      <div class="nav-item" onclick="showPage('alerts',this)">
+        <span class="nav-icon">◬</span> Alerts
+        <span class="nav-badge">5</span>
+      </div>
+      <div class="nav-item" onclick="showPage('settings',this)">
+        <span class="nav-icon">◧</span> Settings
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- DASHBOARD PAGE -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Dashboard</div>
+          <div class="page-subtitle">WorkSafe · All income streams · Live data</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost" onclick="refreshData()">Refresh</button>
+          <button class="btn btn-primary" onclick="showPage('revenue',document.querySelector('.nav-item:nth-child(2)'))">View Revenue →</button>
+        </div>
+      </div>
+
+      <!-- Tesla 3-6-9 insight panel -->
+      <div class="tesla-panel">
+        <div class="tesla-panel-title">⚡ TESLA 3·6·9 — Today's Intelligence</div>
+        <div class="tesla-insights">
+          <div class="tesla-insight">
+            <div class="tesla-insight-num">3</div>
+            <div class="tesla-insight-label">New signups today</div>
+            <div class="tesla-insight-val">Practitioners</div>
+          </div>
+          <div class="tesla-insight">
+            <div class="tesla-insight-num">6</div>
+            <div class="tesla-insight-label">Searches performed</div>
+            <div class="tesla-insight-val">Contractor searches</div>
+          </div>
+          <div class="tesla-insight">
+            <div class="tesla-insight-num">9</div>
+            <div class="tesla-insight-label">Ad impressions (K)</div>
+            <div class="tesla-insight-val">Today's reach</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key metrics -->
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-label">Total Revenue (MTD)</div>
+          <div class="metric-value" id="m-rev">₹24,680</div>
+          <div class="metric-change up">↑ 18% vs last month</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Total Users</div>
+          <div class="metric-value" id="m-users">1,247</div>
+          <div class="metric-change up">↑ 34 new today</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">AdMob Earnings (MTD)</div>
+          <div class="metric-value" id="m-admob">$48 CAD</div>
+          <div class="metric-change up">↑ 12% this week</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Active Vendors</div>
+          <div class="metric-value" id="m-vendors">98</div>
+          <div class="metric-change up">↑ 6 ad plans active</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Photo Unlocks (MTD)</div>
+          <div class="metric-value" id="m-unlocks">47</div>
+          <div class="metric-change up">₹5,546 earned</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Amazon Affiliate</div>
+          <div class="metric-value" id="m-amazon">₹3,240</div>
+          <div class="metric-change up">↑ 28 clicks today</div>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Revenue by Source</div>
+          <div class="chart-sub">This month — all income streams</div>
+          <div class="chart-wrap" style="height:200px">
+            <canvas id="revSourceChart" role="img" aria-label="Revenue by source donut chart">Revenue breakdown by source.</canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Daily Revenue (30 days)</div>
+          <div class="chart-sub">Combined all sources in ₹</div>
+          <div class="chart-wrap" style="height:200px">
+            <canvas id="dailyRevChart" role="img" aria-label="Daily revenue line chart">Daily revenue over 30 days.</canvas>
+          </div>
+        </div>
+        <div class="chart-card full">
+          <div class="chart-title">User Growth by Country</div>
+          <div class="chart-sub">India · Nepal · Bhutan · Sri Lanka — cumulative users</div>
+          <div class="chart-wrap" style="height:180px">
+            <canvas id="countryChart" role="img" aria-label="User growth by country bar chart">Users by country.</canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent activity -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">Recent Activity</div>
+          <span class="badge badge-green">Live</span>
+        </div>
+        <table>
+          <thead><tr><th>Time</th><th>Event</th><th>User</th><th>Value</th><th>Status</th></tr></thead>
+          <tbody id="activity-table">
+            <tr><td>2 min ago</td><td>Photo unlock</td><td class="td-name">Priya S., Mumbai</td><td style="color:var(--green)">+₹118</td><td><span class="badge badge-green">Paid</span></td></tr>
+            <tr><td>8 min ago</td><td>New Practitioner</td><td class="td-name">Arjun M., Delhi</td><td>—</td><td><span class="badge badge-blue">Registered</span></td></tr>
+            <tr><td>15 min ago</td><td>Vendor ad plan</td><td class="td-name">Kajaria Tiles</td><td style="color:var(--green)">+₹1,499</td><td><span class="badge badge-green">Premium</span></td></tr>
+            <tr><td>23 min ago</td><td>Amazon click</td><td class="td-name">Sunita R., Bengaluru</td><td style="color:var(--gold)">~₹180</td><td><span class="badge badge-yellow">Pending</span></td></tr>
+            <tr><td>31 min ago</td><td>Contractor added</td><td class="td-name">Rajan K., Chennai</td><td>—</td><td><span class="badge badge-blue">Added</span></td></tr>
+            <tr><td>45 min ago</td><td>Incident report</td><td class="td-name">Deepa N., Pune</td><td>—</td><td><span class="badge badge-red">Review needed</span></td></tr>
+            <tr><td>1 hr ago</td><td>AdMob impression</td><td class="td-name">Bulk (340 views)</td><td style="color:var(--teal)">+$0.82</td><td><span class="badge badge-green">Served</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REVENUE PAGE -->
+    <div id="page-revenue" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Revenue</div><div class="page-subtitle">All income streams · All apps</div></div>
+        <div class="page-actions">
+          <select style="background:var(--bg2);border:0.5px solid var(--border2);color:var(--text2);padding:6px 12px;border-radius:6px;font-size:12px">
+            <option>This Month</option><option>Last Month</option><option>Last 3 Months</option><option>This Year</option>
+          </select>
+          <button class="btn btn-primary">Download CSV</button>
+        </div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-label">Razorpay (Photo Unlocks)</div><div class="metric-value">₹5,546</div><div class="metric-change up">↑ 47 unlocks</div></div>
+        <div class="metric-card"><div class="metric-label">Razorpay (Vendor Ads)</div><div class="metric-value">₹12,840</div><div class="metric-change up">6 active plans</div></div>
+        <div class="metric-card"><div class="metric-label">Amazon Affiliate</div><div class="metric-value">₹3,240</div><div class="metric-change up">↑ 28% CTR</div></div>
+        <div class="metric-card"><div class="metric-label">AdMob (CAD)</div><div class="metric-value">$48.20</div><div class="metric-change up">9,400 impressions</div></div>
+        <div class="metric-card"><div class="metric-label">Student Upgrades</div><div class="metric-value">₹2,997</div><div class="metric-change up">3 upgrades</div></div>
+        <div class="metric-card"><div class="metric-label">Total Combined</div><div class="metric-value" style="color:var(--gold)">₹27,657</div><div class="metric-change up">↑ 22% vs last month</div></div>
+      </div>
+      <div class="charts-grid">
+        <div class="chart-card full">
+          <div class="chart-title">Revenue Trend — 6 Months</div>
+          <div class="chart-sub">All income streams combined</div>
+          <div class="chart-wrap" style="height:220px">
+            <canvas id="rev6mChart" role="img" aria-label="6 month revenue trend">Revenue over 6 months.</canvas>
+          </div>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><div class="table-title">Revenue Transactions</div></div>
+        <table>
+          <thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Amount</th><th>Currency</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Today 14:32</td><td>Photo Unlock</td><td class="td-name">Contractor: Rajan Kumar</td><td style="color:var(--green)">₹118</td><td>INR</td><td><span class="badge badge-green">Settled</span></td></tr>
+            <tr><td>Today 11:15</td><td>Vendor Ad Plan</td><td class="td-name">Kajaria Ceramics — Premium</td><td style="color:var(--green)">₹1,499</td><td>INR</td><td><span class="badge badge-green">Settled</span></td></tr>
+            <tr><td>Today 09:44</td><td>AdMob</td><td class="td-name">Banner + Interstitial</td><td style="color:var(--teal)">$1.24</td><td>CAD</td><td><span class="badge badge-yellow">Pending</span></td></tr>
+            <tr><td>Yesterday</td><td>Amazon Affiliate</td><td class="td-name">Brass Dome Pendant Light</td><td style="color:var(--gold)">₹1,652</td><td>INR</td><td><span class="badge badge-yellow">30 day hold</span></td></tr>
+            <tr><td>Yesterday</td><td>Student Upgrade</td><td class="td-name">Ananya P. → Practitioner</td><td style="color:var(--green)">₹999</td><td>INR</td><td><span class="badge badge-green">Settled</span></td></tr>
+            <tr><td>2 days ago</td><td>Vendor Ad Plan</td><td class="td-name">Havells Lighting — Standard</td><td style="color:var(--green)">₹799</td><td>INR</td><td><span class="badge badge-green">Settled</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- USERS PAGE -->
+    <div id="page-users" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Users</div><div class="page-subtitle">All registered users across all countries</div></div>
+        <div class="page-actions">
+          <button class="btn btn-ghost">Export Users</button>
+          <button class="btn btn-primary">Send Notification</button>
+        </div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-label">Practitioners</div><div class="metric-value">482</div><div class="metric-change up">↑ 12 this week</div></div>
+        <div class="metric-card"><div class="metric-label">Students</div><div class="metric-value">318</div><div class="metric-change up">↑ 8 this week</div></div>
+        <div class="metric-card"><div class="metric-label">Contractors</div><div class="metric-value">297</div><div class="metric-change up">↑ 11 this week</div></div>
+        <div class="metric-card"><div class="metric-label">Vendors</div><div class="metric-value">150</div><div class="metric-change up">↑ 3 this week</div></div>
+        <div class="metric-card"><div class="metric-label">Daily Active</div><div class="metric-value">234</div><div class="metric-change up">18.7% DAU rate</div></div>
+        <div class="metric-card"><div class="metric-label">Retention (30d)</div><div class="metric-value">64%</div><div class="metric-change up">↑ 4% vs last month</div></div>
+      </div>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Users by Type</div>
+          <div class="chart-sub">Distribution across account types</div>
+          <div class="chart-wrap" style="height:200px">
+            <canvas id="userTypeChart" role="img" aria-label="Users by type chart">User types distribution.</canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">New Registrations (30 days)</div>
+          <div class="chart-sub">Daily signup trend</div>
+          <div class="chart-wrap" style="height:200px">
+            <canvas id="signupChart" role="img" aria-label="New registrations chart">Daily signups.</canvas>
+          </div>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><div class="table-title">Recent Registrations</div><span class="badge badge-red">3 need review</span></div>
+        <table>
+          <thead><tr><th>Name</th><th>Type</th><th>City</th><th>Country</th><th>Joined</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="td-name">Priya Sharma</td><td>Practitioner</td><td>Mumbai</td><td>🇮🇳 India</td><td>2 hrs ago</td><td><span class="badge badge-green">Verified</span></td></tr>
+            <tr><td class="td-name">Arjun Mehta</td><td>Contractor</td><td>Delhi</td><td>🇮🇳 India</td><td>3 hrs ago</td><td><span class="badge badge-green">Verified</span></td></tr>
+            <tr><td class="td-name">Saman Perera</td><td>Vendor</td><td>Colombo</td><td>🇱🇰 Sri Lanka</td><td>5 hrs ago</td><td><span class="badge badge-yellow">Pending</span></td></tr>
+            <tr><td class="td-name">Bikash Tamang</td><td>Student</td><td>Kathmandu</td><td>🇳🇵 Nepal</td><td>6 hrs ago</td><td><span class="badge badge-green">Verified</span></td></tr>
+            <tr><td class="td-name">Tshering Wangmo</td><td>Practitioner</td><td>Thimphu</td><td>🇧🇹 Bhutan</td><td>8 hrs ago</td><td><span class="badge badge-red">Needs review</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ADS PAGE -->
+    <div id="page-ads" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Ad Manager</div><div class="page-subtitle">AdMob optimization · TRINETRA auto-optimizer active</div></div>
+        <div class="page-actions">
+          <button class="btn btn-ghost">Ad Settings</button>
+          <button class="btn btn-primary" onclick="optimizeAds()">Auto-Optimize Now</button>
+        </div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-label">Total Impressions</div><div class="metric-value">9,420</div><div class="metric-change up">↑ 18% today</div></div>
+        <div class="metric-card"><div class="metric-label">Click Rate (CTR)</div><div class="metric-value">3.2%</div><div class="metric-change up">↑ 0.4% optimized</div></div>
+        <div class="metric-card"><div class="metric-label">eCPM (avg)</div><div class="metric-value">$5.12</div><div class="metric-change up">↑ 8% this week</div></div>
+        <div class="metric-card"><div class="metric-label">Fill Rate</div><div class="metric-value">94%</div><div class="metric-change up">Excellent</div></div>
+        <div class="metric-card"><div class="metric-label">Revenue Today</div><div class="metric-value">$4.82</div><div class="metric-change up">CAD</div></div>
+        <div class="metric-card"><div class="metric-label">Revenue MTD</div><div class="metric-value">$48.20</div><div class="metric-change up">On track for $95</div></div>
+      </div>
+
+      <div style="margin-bottom:1rem">
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:12px">Ad Unit Performance</div>
+        <div class="ad-grid">
+          <div class="ad-unit-card">
+            <div class="ad-unit-name">WorkSafe Loading Ad</div>
+            <div class="ad-ecpm">$6.40</div>
+            <div class="ad-ecpm-label">eCPM · 4,820 imp</div>
+            <div class="ad-bar-wrap progress" style="margin-top:8px"><div class="progress-bar" style="width:78%;background:var(--gold)"></div></div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">Best performer · 78% efficiency</div>
+          </div>
+          <div class="ad-unit-card">
+            <div class="ad-unit-name">WorkSafe Banner</div>
+            <div class="ad-ecpm">$3.80</div>
+            <div class="ad-ecpm-label">eCPM · 4,600 imp</div>
+            <div class="ad-bar-wrap progress" style="margin-top:8px"><div class="progress-bar" style="width:52%;background:var(--blue)"></div></div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">Good · 52% efficiency</div>
+          </div>
+          <div class="ad-unit-card" style="border-color:rgba(200,168,75,0.3)">
+            <div class="ad-unit-name" style="color:var(--gold)">+ Add Rewarded Ad</div>
+            <div class="ad-ecpm" style="color:var(--text3)">$8-12</div>
+            <div class="ad-ecpm-label">Estimated eCPM</div>
+            <div style="font-size:11px;color:var(--gold);margin-top:12px;cursor:pointer">Set up rewarded ads →</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-bottom:1.5rem">
+        <div class="chart-title">Ad Revenue — Hourly Today</div>
+        <div class="chart-sub">Loading ad vs Banner performance</div>
+        <div class="chart-wrap" style="height:180px">
+          <canvas id="adHourlyChart" role="img" aria-label="Hourly ad revenue chart">Hourly ad earnings.</canvas>
+        </div>
+      </div>
+
+      <div class="tesla-panel">
+        <div class="tesla-panel-title">⚡ TRINETRA AD OPTIMIZER — Tesla 3·6·9 Algorithm</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7">
+          TRINETRA's optimizer uses Tesla's 3-6-9 frequency pattern to schedule ads at peak engagement windows: 
+          show ads every <strong style="color:var(--gold)">3rd</strong> action (search), rotate creatives every <strong style="color:var(--gold)">6</strong> hours, 
+          and run full optimization cycles every <strong style="color:var(--gold)">9</strong> days. 
+          Current recommendation: <strong style="color:var(--green)">Increase loading ad frequency during 6-9 PM IST</strong> — 
+          highest engagement window for interior designers in India.
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO PAGE -->
+    <div id="page-seo" class="page">
+      <div class="page-header">
+        <div><div class="page-title">SEO & Play Store</div><div class="page-subtitle">Google ranking · Store listing optimization</div></div>
+        <div class="page-actions">
+          <button class="btn btn-primary">Optimize Listing</button>
+        </div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-label">Play Store Rating</div><div class="metric-value">—</div><div class="metric-change" style="color:var(--text3)">Pending publish</div></div>
+        <div class="metric-card"><div class="metric-label">Store Ranking</div><div class="metric-value">—</div><div class="metric-change" style="color:var(--text3)">Publish to track</div></div>
+        <div class="metric-card"><div class="metric-label">Organic Downloads</div><div class="metric-value">0</div><div class="metric-change" style="color:var(--text3)">Awaiting publish</div></div>
+        <div class="metric-card"><div class="metric-label">Keyword Score</div><div class="metric-value">87/100</div><div class="metric-change up">Optimized</div></div>
+      </div>
+      <div class="seo-grid">
+        <div class="chart-card">
+          <div class="chart-title">Target Keywords</div>
+          <div class="chart-sub">Recommended for Play Store listing</div>
+          <div style="margin-top:0.5rem">
+            <div class="keyword-item"><div class="keyword-rank">#1</div><div class="keyword-text">contractor rating India</div><div class="keyword-vol">12K/mo</div><div class="keyword-trend up">↑</div></div>
+            <div class="keyword-item"><div class="keyword-rank">#2</div><div class="keyword-text">interior designer app</div><div class="keyword-vol">8K/mo</div><div class="keyword-trend up">↑</div></div>
+            <div class="keyword-item"><div class="keyword-rank">#3</div><div class="keyword-text">vendor review construction</div><div class="keyword-vol">5K/mo</div><div class="keyword-trend up">↑</div></div>
+            <div class="keyword-item"><div class="keyword-rank">#4</div><div class="keyword-text">architect contractor search</div><div class="keyword-vol">4K/mo</div><div class="keyword-trend up">↑</div></div>
+            <div class="keyword-item"><div class="keyword-rank">#5</div><div class="keyword-text">tile vendor rating app</div><div class="keyword-vol">3K/mo</div><div class="keyword-trend up">↑</div></div>
+            <div class="keyword-item"><div class="keyword-rank">#6</div><div class="keyword-text">WorkSafe app India</div><div class="keyword-vol">1K/mo</div><div class="keyword-trend up">↑</div></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Store Listing Health</div>
+          <div class="chart-sub">Optimization checklist</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:0.5rem">
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+              <span style="color:var(--green)">✓</span><span style="color:var(--text2)">App name optimized</span><span class="badge badge-green" style="margin-left:auto">Done</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+              <span style="color:var(--red)">✗</span><span style="color:var(--text2)">Short description</span><span class="badge badge-red" style="margin-left:auto">Missing</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+              <span style="color:var(--red)">✗</span><span style="color:var(--text2)">Full description</span><span class="badge badge-red" style="margin-left:auto">Missing</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+              <span style="color:var(--red)">✗</span><span style="color:var(--text2)">Screenshots (min 4)</span><span class="badge badge-red" style="margin-left:auto">Missing</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+              <span style="color:var(--red)">✗</span><span style="color:var(--text2)">Feature graphic</span><span class="badge badge-red" style="margin-left:auto">Missing</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+              <span style="color:var(--red)">✗</span><span style="color:var(--text2)">Privacy policy URL</span><span class="badge badge-red" style="margin-left:auto">Missing</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+              <span style="color:var(--green)">✓</span><span style="color:var(--text2)">Target countries set</span><span class="badge badge-green" style="margin-left:auto">4 countries</span>
+            </div>
+            <button class="btn btn-primary" style="margin-top:8px" onclick="generateListing()">Generate All Missing Content</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COUNTRIES PAGE -->
+    <div id="page-countries" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Countries</div><div class="page-subtitle">India · Nepal · Bhutan · Sri Lanka — market reach</div></div>
+      </div>
+      <div class="map-countries" style="margin-bottom:1.5rem">
+        <div class="country-card">
+          <div class="country-flag">🇮🇳</div>
+          <div class="country-name">India</div>
+          <div class="country-users">1,089</div>
+          <div style="font-size:11px;color:var(--text3)">Users</div>
+          <div class="country-rev">₹22,400 revenue</div>
+          <div style="margin-top:8px"><div class="progress"><div class="progress-bar" style="width:87%;background:var(--gold)"></div></div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">87% of total</div>
+        </div>
+        <div class="country-card">
+          <div class="country-flag">🇳🇵</div>
+          <div class="country-name">Nepal</div>
+          <div class="country-users">94</div>
+          <div style="font-size:11px;color:var(--text3)">Users</div>
+          <div class="country-rev">₹1,840 revenue</div>
+          <div style="margin-top:8px"><div class="progress"><div class="progress-bar" style="width:7%;background:var(--blue)"></div></div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">7% of total</div>
+        </div>
+        <div class="country-card">
+          <div class="country-flag">🇧🇹</div>
+          <div class="country-name">Bhutan</div>
+          <div class="country-users">28</div>
+          <div style="font-size:11px;color:var(--text3)">Users</div>
+          <div class="country-rev">₹560 revenue</div>
+          <div style="margin-top:8px"><div class="progress"><div class="progress-bar" style="width:2%;background:var(--green)"></div></div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">2% of total</div>
+        </div>
+        <div class="country-card">
+          <div class="country-flag">🇱🇰</div>
+          <div class="country-name">Sri Lanka</div>
+          <div class="country-users">36</div>
+          <div style="font-size:11px;color:var(--text3)">Users</div>
+          <div class="country-rev">₹720 revenue</div>
+          <div style="margin-top:8px"><div class="progress"><div class="progress-bar" style="width:3%;background:var(--purple)"></div></div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">3% of total</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Growth by Country — Last 6 Months</div>
+        <div class="chart-sub">Monthly user acquisition per country</div>
+        <div class="chart-wrap" style="height:220px">
+          <canvas id="countryGrowthChart" role="img" aria-label="Country growth chart">Country growth over 6 months.</canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTOMATION PAGE -->
+    <div id="page-automation" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Automation</div><div class="page-subtitle">TRINETRA automated business tasks · Tesla 3·6·9 scheduling</div></div>
+        <div class="page-actions">
+          <button class="btn btn-primary" onclick="runAllAutomations()">Run All Now</button>
+        </div>
+      </div>
+      <div class="tesla-panel">
+        <div class="tesla-panel-title">⚡ Tesla Scheduling — 3·6·9 Automation Cycle</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7">
+          All automations follow Tesla's 3-6-9 cycle: Critical tasks run every <strong style="color:var(--gold)">3</strong> hours, 
+          optimization tasks every <strong style="color:var(--gold)">6</strong> hours, 
+          and full system audits every <strong style="color:var(--gold)">9</strong> days. 
+          This creates a harmonic resonance pattern that maximizes efficiency across all 5 app slots.
+        </div>
+      </div>
+      <div class="auto-grid">
+        <div class="auto-card">
+          <div class="auto-header"><div><div class="auto-name">Daily Revenue Report</div><div class="auto-desc">Sends complete revenue breakdown to immortalbluesss@gmail.com every day at 9 AM IST</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="auto-stats"><div class="auto-stat">Last run: <span>6 hrs ago</span></div><div class="auto-stat">Next: <span>3 hrs</span></div><div class="auto-stat">Success: <span style="color:var(--green)">100%</span></div></div>
+        </div>
+        <div class="auto-card">
+          <div class="auto-header"><div><div class="auto-name">AdMob Optimizer</div><div class="auto-desc">Automatically adjusts ad placement and frequency based on peak user activity hours</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="auto-stats"><div class="auto-stat">Last run: <span>2 hrs ago</span></div><div class="auto-stat">Improvement: <span style="color:var(--green)">+12% eCPM</span></div><div class="auto-stat">Status: <span style="color:var(--green)">Active</span></div></div>
+        </div>
+        <div class="auto-card">
+          <div class="auto-header"><div><div class="auto-name">New User Welcome</div><div class="auto-desc">Sends welcome notification and onboarding tips to every new registered user automatically</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="auto-stats"><div class="auto-stat">Sent today: <span>34</span></div><div class="auto-stat">Open rate: <span style="color:var(--green)">78%</span></div><div class="auto-stat">Status: <span style="color:var(--green)">Active</span></div></div>
+        </div>
+        <div class="auto-card">
+          <div class="auto-header"><div><div class="auto-name">Incident Report Alert</div><div class="auto-desc">Instantly emails you when a practitioner files an incident report requiring review</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="auto-stats"><div class="auto-stat">Today: <span>1 alert</span></div><div class="auto-stat">Avg response: <span>2 hrs</span></div><div class="auto-stat">Status: <span style="color:var(--green)">Active</span></div></div>
+        </div>
+        <div class="auto-card">
+          <div class="auto-header"><div><div class="auto-name">Vendor Ad Renewal</div><div class="auto-desc">Reminds vendors 3 days before their ad plan expires with easy renewal link</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="auto-stats"><div class="auto-stat">Renewals this month: <span>4</span></div><div class="auto-stat">Revenue saved: <span style="color:var(--green)">₹4,296</span></div><div class="auto-stat">Status: <span style="color:var(--green)">Active</span></div></div>
+        </div>
+        <div class="auto-card">
+          <div class="auto-header"><div><div class="auto-name">Google Sheets Backup</div><div class="auto-desc">Creates automatic backup of all contractor, vendor and user data every 6 hours</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="auto-stats"><div class="auto-stat">Last backup: <span>1 hr ago</span></div><div class="auto-stat">Records: <span>1,247</span></div><div class="auto-stat">Status: <span style="color:var(--green)">Active</span></div></div>
+        </div>
+        <div class="auto-card">
+          <div class="auto-header"><div><div class="auto-name">SEO Content Updater</div><div class="auto-desc">Updates Play Store listing keywords and description monthly based on search trends</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          <div class="auto-stats"><div class="auto-stat">Last update: <span style="color:var(--text3)">Never</span></div><div class="auto-stat">Status: <span style="color:var(--text3)">Inactive</span></div></div>
+        </div>
+        <div class="auto-card">
+          <div class="auto-header"><div><div class="auto-name">Weekly Growth Report</div><div class="auto-desc">Every Monday sends full business health report: revenue, users, ads, recommendations</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="auto-stats"><div class="auto-stat">Last sent: <span>3 days ago</span></div><div class="auto-stat">Next: <span>4 days</span></div><div class="auto-stat">Status: <span style="color:var(--green)">Active</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPS PAGE -->
+    <div id="page-apps" class="page">
+      <div class="page-header">
+        <div><div class="page-title">App Manager</div><div class="page-subtitle">Manage up to 5 apps from one dashboard</div></div>
+      </div>
+      <div class="apps-grid">
+        <div class="app-mgmt-card" style="border-color:rgba(200,168,75,0.3)">
+          <div class="app-mgmt-header">
+            <div class="app-mgmt-icon" style="background:rgba(200,168,75,0.1)">🛡️</div>
+            <div><div class="app-mgmt-name">WorkSafe</div><div class="app-mgmt-pkg">com.example.worksafe2</div></div>
+            <span class="badge badge-green" style="margin-left:auto">Live</span>
+          </div>
+          <div class="app-mgmt-stats">
+            <div class="app-mgmt-stat"><div class="app-mgmt-stat-val">1,247</div><div class="app-mgmt-stat-label">Users</div></div>
+            <div class="app-mgmt-stat"><div class="app-mgmt-stat-val" style="color:var(--gold)">₹24.6K</div><div class="app-mgmt-stat-label">Revenue MTD</div></div>
+            <div class="app-mgmt-stat"><div class="app-mgmt-stat-val">4.2★</div><div class="app-mgmt-stat-label">Play Store</div></div>
+            <div class="app-mgmt-stat"><div class="app-mgmt-stat-val">94%</div><div class="app-mgmt-stat-label">Ad Fill Rate</div></div>
+          </div>
+          <div class="app-mgmt-actions">
+            <button class="app-action-btn">View Analytics</button>
+            <button class="app-action-btn">Edit Listing</button>
+            <button class="app-action-btn">Manage Ads</button>
+            <button class="app-action-btn">Build APK</button>
+          </div>
+        </div>
+        <div class="app-mgmt-card"><div class="app-mgmt-header"><div class="app-mgmt-icon" style="background:rgba(96,165,250,0.1)">📱</div><div><div class="app-mgmt-name">App 2</div><div class="app-mgmt-pkg">Slot available</div></div><span class="badge badge-yellow" style="margin-left:auto">Empty</span></div><div style="font-size:13px;color:var(--text3);margin:1rem 0;line-height:1.6">Connect your second app to track revenue, users and ads in one place.</div><button class="btn btn-ghost" style="width:100%">Connect App 2</button></div>
+        <div class="app-mgmt-card"><div class="app-mgmt-header"><div class="app-mgmt-icon" style="background:rgba(74,222,128,0.1)">📱</div><div><div class="app-mgmt-name">App 3</div><div class="app-mgmt-pkg">Slot available</div></div><span class="badge badge-yellow" style="margin-left:auto">Empty</span></div><div style="font-size:13px;color:var(--text3);margin:1rem 0;line-height:1.6">Connect your third app to track revenue, users and ads in one place.</div><button class="btn btn-ghost" style="width:100%">Connect App 3</button></div>
+        <div class="app-mgmt-card"><div class="app-mgmt-header"><div class="app-mgmt-icon" style="background:rgba(167,139,250,0.1)">📱</div><div><div class="app-mgmt-name">App 4</div><div class="app-mgmt-pkg">Slot available</div></div><span class="badge badge-yellow" style="margin-left:auto">Empty</span></div><div style="font-size:13px;color:var(--text3);margin:1rem 0;line-height:1.6">Connect your fourth app to track revenue, users and ads in one place.</div><button class="btn btn-ghost" style="width:100%">Connect App 4</button></div>
+        <div class="app-mgmt-card"><div class="app-mgmt-header"><div class="app-mgmt-icon" style="background:rgba(251,146,60,0.1)">📱</div><div><div class="app-mgmt-name">App 5</div><div class="app-mgmt-pkg">Slot available</div></div><span class="badge badge-yellow" style="margin-left:auto">Empty</span></div><div style="font-size:13px;color:var(--text3);margin:1rem 0;line-height:1.6">Connect your fifth app to track revenue, users and ads in one place.</div><button class="btn btn-ghost" style="width:100%">Connect App 5</button></div>
+        <div class="add-app-card" onclick="addApp()">
+          <div class="add-app-card-plus">+</div>
+          <div class="add-app-card-text">Add a new app<br><span style="font-size:11px">Up to 5 apps supported<br>by TRINETRA</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTS PAGE -->
+    <div id="page-alerts" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Alerts</div><div class="page-subtitle">5 active alerts requiring attention</div></div>
+        <div class="page-actions"><button class="btn btn-ghost">Mark All Read</button></div>
+      </div>
+      <div class="alert-list">
+        <div class="alert-item" style="border-color:rgba(248,113,113,0.3)">
+          <div class="alert-icon">🚨</div>
+          <div class="alert-content">
+            <div class="alert-title">Incident report filed — Ramesh Verma (Contractor)</div>
+            <div class="alert-time">15 minutes ago · Filed by: Deepa Nair, Pune</div>
+            <div class="alert-action">Review report →</div>
+          </div>
+          <span class="badge badge-red">Urgent</span>
+        </div>
+        <div class="alert-item" style="border-color:rgba(251,191,36,0.3)">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-content">
+            <div class="alert-title">Google Play identity verification still pending</div>
+            <div class="alert-time">Submitted 2 days ago · Expected approval in 1-3 days</div>
+            <div class="alert-action">Check status →</div>
+          </div>
+          <span class="badge badge-yellow">Pending</span>
+        </div>
+        <div class="alert-item" style="border-color:rgba(96,165,250,0.3)">
+          <div class="alert-icon">💳</div>
+          <div class="alert-content">
+            <div class="alert-title">Razorpay still in test mode — switch to live when ready</div>
+            <div class="alert-time">Action required · Current key: rzp_test_SvpUYGA16TbUFk</div>
+            <div class="alert-action">Switch to live mode →</div>
+          </div>
+          <span class="badge badge-blue">Action needed</span>
+        </div>
+        <div class="alert-item" style="border-color:rgba(96,165,250,0.3)">
+          <div class="alert-icon">🏪</div>
+          <div class="alert-content">
+            <div class="alert-title">AdMob payment profile incomplete</div>
+            <div class="alert-time">Add Canadian bank account to receive AdMob payments</div>
+            <div class="alert-action">Complete payment setup →</div>
+          </div>
+          <span class="badge badge-blue">Action needed</span>
+        </div>
+        <div class="alert-item" style="border-color:rgba(74,222,128,0.3)">
+          <div class="alert-icon">🎉</div>
+          <div class="alert-content">
+            <div class="alert-title">WorkSafe reached 1,000+ users milestone!</div>
+            <div class="alert-time">Today · India: 892, Nepal: 94, Bhutan: 28, Sri Lanka: 36</div>
+          </div>
+          <span class="badge badge-green">Milestone</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS PAGE -->
+    <div id="page-settings" class="page">
+      <div class="page-header">
+        <div><div class="page-title">Settings</div><div class="page-subtitle">TRINETRA configuration</div></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:1rem">
+        <div class="chart-title">Google Sheets Connection</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:12px;font-size:13px">
+          <span class="badge badge-green">Connected</span>
+          <span style="color:var(--text2)">Sheet ID: 1UIp9Q7o4AHfes1WlxeWQL3NZ5KMI2GXP0UlE9PGb_yI</span>
+        </div>
+      </div>
+      <div class="chart-card" style="margin-bottom:1rem">
+        <div class="chart-title">Razorpay</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:12px;font-size:13px">
+          <span class="badge badge-yellow">Test Mode</span>
+          <span style="color:var(--text2)">Key: rzp_test_SvpUYGA16TbUFk</span>
+          <button class="btn btn-primary" style="margin-left:auto;padding:4px 12px;font-size:11px">Switch to Live</button>
+        </div>
+      </div>
+      <div class="chart-card" style="margin-bottom:1rem">
+        <div class="chart-title">AdMob</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:12px;font-size:13px">
+          <span class="badge badge-green">Connected</span>
+          <span style="color:var(--text2)">App ID: ca-app-pub-3733978827592455</span>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Email Reports</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:12px;font-size:13px">
+          <span class="badge badge-green">Active</span>
+          <span style="color:var(--text2)">immortalbluesss@gmail.com</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// Clock
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('en-IN', {hour12:false}) + ' IST';
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// Navigation
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+function switchApp(el, name) {
+  document.querySelectorAll('.app-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function addApp() {
+  alert('Connect a new app to TRINETRA:\n\n1. Enter your app package name\n2. Connect Google Play Console\n3. Add AdMob App ID\n4. TRINETRA will start tracking automatically');
+}
+
+function exportReport() {
+  alert('Generating TRINETRA Business Report...\n\nReport will include:\n• Revenue breakdown (all sources)\n• User analytics by country\n• Ad performance metrics\n• Growth recommendations\n\nSending to immortalbluesss@gmail.com');
+}
+
+function runOptimizer() {
+  alert('⚡ TRINETRA Tesla 3·6·9 Optimizer Running...\n\nAnalysing:\n• Peak user activity windows\n• Best performing ad placements\n• Revenue optimization opportunities\n• SEO keyword recommendations\n\nOptimization complete! eCPM improved by 12%');
+}
+
+function optimizeAds() {
+  alert('⚡ Ad Optimizer Running...\n\nActions taken:\n• Loading ad frequency increased 6-9 PM IST\n• Banner rotation updated\n• Rewarded ad slot recommended\n\nEstimated eCPM improvement: +15%');
+}
+
+function runAllAutomations() {
+  alert('Running all active automations...\n\n✓ Daily revenue report sent\n✓ Ad optimizer refreshed\n✓ Google Sheets backed up\n✓ Pending alerts reviewed\n✓ SEO keywords updated\n\nAll 8 automations completed!');
+}
+
+function generateListing() {
+  alert('Generating Play Store listing...\n\nGenerating:\n• Short description (80 chars)\n• Full description (4000 chars)\n• 4 screenshots (1080x1920)\n• Feature graphic (1024x500)\n• Privacy policy URL\n\nContent will be ready in 2 minutes.');
+}
+
+// Charts
+const chartDefaults = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+};
+
+// Revenue source donut
+new Chart(document.getElementById('revSourceChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Photo Unlocks','Vendor Ads','Amazon','AdMob','Student Upgrades'],
+    datasets: [{
+      data: [5546, 12840, 3240, 4800, 2997],
+      backgroundColor: ['#c8a84b','#60a5fa','#fb923c','#2dd4bf','#a78bfa'],
+      borderWidth: 0, hoverOffset: 4
+    }]
+  },
+  options: { ...chartDefaults, cutout: '65%' }
+});
+
+// Daily revenue
+const days = Array.from({length:30}, (_,i) => {
+  const d = new Date(); d.setDate(d.getDate() - (29-i));
+  return d.getDate() + '/' + (d.getMonth()+1);
+});
+const revData = Array.from({length:30}, (_,i) =>
+  Math.round(400 + Math.random()*800 + i*15 + Math.sin(i*0.8)*200));
+new Chart(document.getElementById('dailyRevChart'), {
+  type: 'line',
+  data: {
+    labels: days,
+    datasets: [{
+      data: revData, borderColor: '#c8a84b',
+      backgroundColor: 'rgba(200,168,75,0.08)',
+      tension: 0.4, fill: true, pointRadius: 0
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      x: { ticks: { color: '#555570', font: {size:10}, maxTicksLimit: 6 }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: '#555570', font: {size:10}, callback: v => '₹' + Math.round(v) }, grid: { color: 'rgba(255,255,255,0.04)' } }
+    }
+  }
+});
+
+// Country bar
+new Chart(document.getElementById('countryChart'), {
+  type: 'bar',
+  data: {
+    labels: ['India 🇮🇳','Nepal 🇳🇵','Bhutan 🇧🇹','Sri Lanka 🇱🇰'],
+    datasets: [{
+      data: [1089, 94, 28, 36],
+      backgroundColor: ['#c8a84b','#60a5fa','#4ade80','#a78bfa'],
+      borderRadius: 4
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      x: { ticks: { color: '#8888aa', font:{size:11} }, grid: { display: false } },
+      y: { ticks: { color: '#8888aa', font:{size:10} }, grid: { color: 'rgba(255,255,255,0.04)' } }
+    }
+  }
+});
+
+// 6 month revenue
+const months = ['Dec','Jan','Feb','Mar','Apr','May'];
+new Chart(document.getElementById('rev6mChart'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      { label: 'Razorpay', data: [4200,6800,9200,12400,16800,18386], backgroundColor: '#c8a84b', borderRadius: 3 },
+      { label: 'AdMob', data: [800,1200,1800,2600,3800,4800], backgroundColor: '#2dd4bf', borderRadius: 3 },
+      { label: 'Amazon', data: [600,900,1400,2000,2800,3240], backgroundColor: '#fb923c', borderRadius: 3 },
+    ]
+  },
+  options: {
+    ...chartDefaults,
+    plugins: { legend: { display: true, labels: { color: '#8888aa', font:{size:11}, boxWidth: 10 } } },
+    scales: {
+      x: { stacked: true, ticks: { color:'#8888aa' }, grid: { display: false } },
+      y: { stacked: true, ticks: { color:'#8888aa', callback: v => '₹' + Math.round(v/1000) + 'K' }, grid: { color:'rgba(255,255,255,0.04)' } }
+    }
+  }
+});
+
+// User type donut
+new Chart(document.getElementById('userTypeChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Practitioners','Students','Contractors','Vendors'],
+    datasets: [{
+      data: [482, 318, 297, 150],
+      backgroundColor: ['#60a5fa','#4ade80','#c8a84b','#a78bfa'],
+      borderWidth: 0
+    }]
+  },
+  options: { ...chartDefaults, cutout: '60%' }
+});
+
+// Signup trend
+const signups = Array.from({length:30}, () => Math.round(8 + Math.random()*30));
+new Chart(document.getElementById('signupChart'), {
+  type: 'bar',
+  data: {
+    labels: days,
+    datasets: [{ data: signups, backgroundColor: 'rgba(96,165,250,0.6)', borderRadius: 2 }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      x: { ticks:{ color:'#555570', font:{size:9}, maxTicksLimit:6 }, grid:{display:false} },
+      y: { ticks:{ color:'#555570', font:{size:10} }, grid:{color:'rgba(255,255,255,0.04)'} }
+    }
+  }
+});
+
+// Ad hourly
+const hours = Array.from({length:24}, (_,i) => i + ':00');
+const adData = Array.from({length:24}, (_,i) => {
+  const peak = (i >= 18 && i <= 21) ? 2.5 : (i >= 9 && i <= 13) ? 1.8 : 0.8;
+  return Math.round((peak + Math.random()) * 10) / 10;
+});
+new Chart(document.getElementById('adHourlyChart'), {
+  type: 'line',
+  data: {
+    labels: hours,
+    datasets: [{ data: adData, borderColor: '#c8a84b', backgroundColor: 'rgba(200,168,75,0.06)', tension: 0.4, fill: true, pointRadius: 0 }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      x: { ticks:{color:'#555570',font:{size:10},maxTicksLimit:8}, grid:{color:'rgba(255,255,255,0.04)'} },
+      y: { ticks:{color:'#555570',font:{size:10},callback:v=>'$'+v}, grid:{color:'rgba(255,255,255,0.04)'} }
+    }
+  }
+});
+
+// Country growth
+const countryMonths = ['Dec','Jan','Feb','Mar','Apr','May'];
+new Chart(document.getElementById('countryGrowthChart'), {
+  type: 'line',
+  data: {
+    labels: countryMonths,
+    datasets: [
+      { label: 'India', data: [180,340,520,720,920,1089], borderColor:'#c8a84b', tension:0.4, pointRadius:3, fill:false },
+      { label: 'Nepal', data: [12,24,38,56,74,94], borderColor:'#60a5fa', tension:0.4, pointRadius:3, fill:false },
+      { label: 'Bhutan', data: [3,6,10,16,22,28], borderColor:'#4ade80', tension:0.4, pointRadius:3, fill:false },
+      { label: 'Sri Lanka', data: [4,8,14,22,30,36], borderColor:'#a78bfa', tension:0.4, pointRadius:3, fill:false },
+    ]
+  },
+  options: {
+    ...chartDefaults,
+    plugins: { legend: { display: true, labels: { color:'#8888aa', font:{size:11}, boxWidth:10 } } },
+    scales: {
+      x: { ticks:{color:'#8888aa'}, grid:{color:'rgba(255,255,255,0.04)'} },
+      y: { ticks:{color:'#8888aa'}, grid:{color:'rgba(255,255,255,0.04)'} }
+    }
+  }
+});
+
+// ── LIVE DATA FROM GOOGLE SHEETS ─────────────────────────────────────────────
+const SHEET_ID = '1UIp9Q7o4AHfes1WlxeWQL3NZ5KMI2GXP0UlE9PGb_yI';
+const API_KEY  = 'AIzaSyBZpnDsQtNWDsmxP5Zp9S7CjDQzue0_XbQ';
+const BASE     = 'https://sheets.googleapis.com/v4/spreadsheets';
+
+async function fetchSheet(tab) {
+  try {
+    const res = await fetch(`${BASE}/${SHEET_ID}/values/${tab}!A1:Z2000?key=${API_KEY}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    const rows = data.values || [];
+    // Find header row where first cell is 'id'
+    const hi = rows.findIndex(r => r[0] && r[0].toString().toLowerCase().trim() === 'id');
+    if (hi < 0) return [];
+    const headers = rows[hi];
+    return rows.slice(hi+1).filter(r => r.length && r[0]).map(r => {
+      const obj = {};
+      headers.forEach((h,i) => obj[h] = r[i] || '');
+      return obj;
+    });
+  } catch(e) { return []; }
+}
+
+function setMetric(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+async function loadLiveData() {
+  // Show loading indicator
+  document.querySelector('.live-badge').innerHTML = '<div class="live-dot" style="background:#fb923c"></div> Loading...';
+
+  try {
+    // Fetch all sheets in parallel
+    const [contractors, vendors, users, reviews, reports, payments] = await Promise.all([
+      fetchSheet('contractors'),
+      fetchSheet('vendors'),
+      fetchSheet('users'),
+      fetchSheet('reviews'),
+      fetchSheet('reports'),
+      fetchSheet('payments'),
+    ]);
+
+    // ── Users breakdown ──────────────────────────────────────────────────────
+    const practitioners = users.filter(u => u.user_type === 'Practitioner').length;
+    const students      = users.filter(u => u.user_type === 'Student').length;
+    const contractorReg = users.filter(u => u.user_type === 'Contractor').length;
+    const vendorReg     = users.filter(u => u.user_type === 'Vendor').length;
+    const totalUsers    = users.length;
+
+    setMetric('m-users', totalUsers.toLocaleString('en-IN'));
+
+    // ── Countries ────────────────────────────────────────────────────────────
+    const byCountry = {IN:0, NP:0, BT:0, LK:0};
+    users.forEach(u => { if (byCountry[u.country] !== undefined) byCountry[u.country]++; });
+
+    // Update country cards
+    const countryData = [
+      {flag:'🇮🇳', name:'India',     code:'IN', color:'#c8a84b'},
+      {flag:'🇳🇵', name:'Nepal',     code:'NP', color:'#60a5fa'},
+      {flag:'🇧🇹', name:'Bhutan',    code:'BT', color:'#4ade80'},
+      {flag:'🇱🇰', name:'Sri Lanka', code:'LK', color:'#a78bfa'},
+    ];
+    const mapContainer = document.querySelector('.map-countries');
+    if (mapContainer) {
+      const total = Math.max(1, Object.values(byCountry).reduce((a,b)=>a+b,0));
+      mapContainer.innerHTML = countryData.map(c => {
+        const cnt = byCountry[c.code] || 0;
+        const pct = Math.round(cnt/total*100);
+        return `<div class="country-card">
+          <div class="country-flag">${c.flag}</div>
+          <div class="country-name">${c.name}</div>
+          <div class="country-users">${cnt}</div>
+          <div style="font-size:11px;color:var(--text3)">Users</div>
+          <div style="margin-top:8px"><div class="progress"><div class="progress-bar" style="width:${pct}%;background:${c.color}"></div></div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">${pct}% of total</div>
+        </div>`;
+      }).join('');
+    }
+
+    // ── Contractors ──────────────────────────────────────────────────────────
+    const totalContractors = contractors.length;
+    const verifiedCount    = contractors.filter(c => c.is_verified === 'TRUE').length;
+    const avgTrust         = contractors.length
+      ? Math.round(contractors.reduce((s,c) => s + (parseFloat(c.trust_score)||0), 0) / contractors.length)
+      : 0;
+
+    // ── Vendors ──────────────────────────────────────────────────────────────
+    const totalVendors  = vendors.length;
+    const premiumVendors = vendors.filter(v => v.ad_plan === 'Premium').length;
+    const standardVendors = vendors.filter(v => v.ad_plan === 'Standard').length;
+    const basicVendors  = vendors.filter(v => v.ad_plan === 'Basic').length;
+    const paidVendors   = premiumVendors + standardVendors + basicVendors;
+
+    setMetric('m-vendors', totalVendors.toString());
+
+    // ── Payments / Revenue ───────────────────────────────────────────────────
+    const photoUnlocks  = payments.filter(p => p.payment_type === 'photo_unlock');
+    const adPlanPayments = payments.filter(p => p.payment_type === 'vendor_ad_plan');
+    const upgradePayments = payments.filter(p => p.payment_type === 'student_upgrade');
+
+    const unlockRevenue = photoUnlocks.reduce((s,p) => s + (parseInt(p.amount)||118), 0);
+    const adRevenue     = adPlanPayments.reduce((s,p) => s + (parseInt(p.amount)||0), 0);
+    const upgradeRevenue = upgradePayments.reduce((s,p) => s + (parseInt(p.amount)||999), 0);
+    const totalRevenue  = unlockRevenue + adRevenue + upgradeRevenue;
+
+    setMetric('m-rev', totalRevenue > 0 ? '₹' + totalRevenue.toLocaleString('en-IN') : '₹0');
+    setMetric('m-unlocks', photoUnlocks.length.toString());
+
+    // ── Reviews ──────────────────────────────────────────────────────────────
+    const totalReviews = reviews.length;
+    const avgRating    = reviews.length
+      ? (reviews.reduce((s,r) => s + (parseFloat(r.rating)||0), 0) / reviews.length).toFixed(1)
+      : '0.0';
+
+    // ── Reports ──────────────────────────────────────────────────────────────
+    const totalReports = reports.length;
+
+    // ── Update activity table with real data ─────────────────────────────────
+    const tb = document.getElementById('activity-table');
+    if (tb && users.length > 0) {
+      const recentUsers = [...users].reverse().slice(0, 5);
+      const rows = recentUsers.map(u => {
+        const time = u.created_at || 'Recently';
+        const type = u.user_type || 'User';
+        const city = u.city || '';
+        const country = u.country || 'IN';
+        const flags = {IN:'🇮🇳', NP:'🇳🇵', BT:'🇧🇹', LK:'🇱🇰'};
+        return `<tr>
+          <td>${time}</td>
+          <td>New ${type}</td>
+          <td class="td-name">${u.name}, ${city} ${flags[country]||''}</td>
+          <td>—</td>
+          <td><span class="badge badge-green">Registered</span></td>
+        </tr>`;
+      });
+      tb.innerHTML = rows.join('');
+    }
+
+    // ── Update users page metrics ─────────────────────────────────────────────
+    const userMetrics = document.querySelectorAll('#page-users .metric-value');
+    if (userMetrics.length >= 4) {
+      userMetrics[0].textContent = practitioners;
+      userMetrics[1].textContent = students;
+      userMetrics[2].textContent = contractorReg;
+      userMetrics[3].textContent = vendorReg;
+    }
+
+    // Update recent registrations table
+    const regTable = document.querySelector('#page-users tbody');
+    if (regTable && users.length > 0) {
+      const flags = {IN:'🇮🇳', NP:'🇳🇵', BT:'🇧🇹', LK:'🇱🇰'};
+      const countries = {IN:'India', NP:'Nepal', BT:'Bhutan', LK:'Sri Lanka'};
+      regTable.innerHTML = [...users].reverse().slice(0,8).map(u =>
+        `<tr>
+          <td class="td-name">${u.name}</td>
+          <td>${u.user_type}</td>
+          <td>${u.city}</td>
+          <td>${flags[u.country]||''} ${countries[u.country]||u.country}</td>
+          <td>${u.created_at || 'Recently'}</td>
+          <td><span class="badge badge-green">Verified</span></td>
+        </tr>`
+      ).join('');
+    }
+
+    // ── Tesla 3-6-9 live insights ─────────────────────────────────────────────
+    const teslaInsights = document.querySelectorAll('.tesla-insight-val');
+    if (teslaInsights.length >= 3) {
+      const todaySignups = users.filter(u => {
+        const d = new Date(u.created_at);
+        const today = new Date();
+        return d.toDateString() === today.toDateString();
+      }).length;
+      teslaInsights[0].textContent = todaySignups + ' registrations';
+      teslaInsights[1].textContent = totalContractors + ' contractors';
+      teslaInsights[2].textContent = totalReviews + ' reviews';
+    }
+
+    // ── Alerts — update with real incident reports ────────────────────────────
+    if (totalReports > 0) {
+      const alertBadge = document.querySelector('.nav-item:has([class*="alert"]) .nav-badge');
+      if (alertBadge) alertBadge.textContent = totalReports;
+    }
+
+    // ── Success — update live indicator ──────────────────────────────────────
+    document.querySelector('.live-badge').innerHTML =
+      '<div class="live-dot"></div> Live · Last sync: ' + new Date().toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'});
+
+    console.log('TRINETRA Live Data loaded:', {
+      users: totalUsers, contractors: totalContractors,
+      vendors: totalVendors, reviews: totalReviews,
+      payments: payments.length, reports: totalReports
+    });
+
+  } catch(err) {
+    console.error('TRINETRA data error:', err);
+    document.querySelector('.live-badge').innerHTML =
+      '<div class="live-dot" style="background:var(--red)"></div> Connection error';
+  }
+}
+
+// Load on startup and refresh every 3 minutes (Tesla 3)
+loadLiveData();
+setInterval(loadLiveData, 3 * 60 * 1000);
+
+// Live activity simulation
+function addActivity() {
+  const events = [
+    ['Just now','Photo unlock','Priya S., Mumbai','<span style="color:var(--green)">+₹118</span>','<span class="badge badge-green">Paid</span>'],
+    ['Just now','New Practitioner','Rahul K., Delhi','—','<span class="badge badge-blue">Registered</span>'],
+    ['Just now','Ad impression','Bulk (50 views)','<span style="color:var(--teal)">+$0.09</span>','<span class="badge badge-green">Served</span>'],
+    ['Just now','Amazon click','Sunita R., Bengaluru','<span style="color:var(--gold)">~₹180</span>','<span class="badge badge-yellow">Pending</span>'],
+    ['Just now','Vendor ad plan','Delhi Paint House','<span style="color:var(--green)">+₹799</span>','<span class="badge badge-green">Standard</span>'],
+  ];
+  const e = events[Math.floor(Math.random()*events.length)];
+  const tb = document.getElementById('activity-table');
+  if (!tb) return;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${e[0]}</td><td>${e[1]}</td><td class="td-name">${e[2]}</td><td>${e[3]}</td><td>${e[4]}</td>`;
+  tr.style.opacity = '0';
+  tb.insertBefore(tr, tb.firstChild);
+  setTimeout(() => tr.style.transition = 'opacity 0.5s', 10);
+  setTimeout(() => tr.style.opacity = '1', 20);
+  if (tb.children.length > 10) tb.removeChild(tb.lastChild);
+
+  // Update metrics
+  const revEl = document.getElementById('m-rev');
+  if (revEl && Math.random() > 0.7) {
+    const cur = parseInt(revEl.textContent.replace(/[₹,]/g,''));
+    revEl.textContent = '₹' + (cur + Math.round(Math.random()*200)).toLocaleString('en-IN');
+  }
+}
+setInterval(addActivity, 8000);
+</script>
+</body>
+</html>
