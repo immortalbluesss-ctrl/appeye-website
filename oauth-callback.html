@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>APPEYE — Connecting...</title>
+<style>
+body{background:#04050a;color:#eef0f8;font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;text-align:center;padding:20px}
+.wrap{max-width:320px}
+.icon{font-size:2.5rem;margin-bottom:16px}
+.title{font-family:Syne,sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:8px}
+.sub{font-size:13px;color:#a0aabe;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="icon" id="icon">🔄</div>
+  <div class="title" id="title">Connecting your account...</div>
+  <div class="sub" id="sub">Please wait while we complete the authorization.</div>
+</div>
+<script>
+// Parse URL params from OAuth redirect
+function getParam(name) {
+  var url = window.location.search;
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  var results = regex.exec(url);
+  if (!results || !results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+var code  = getParam('code');
+var state = getParam('state');
+var error = getParam('error');
+
+if (error) {
+  document.getElementById('icon').textContent = '❌';
+  document.getElementById('title').textContent = 'Authorization Denied';
+  document.getElementById('sub').textContent = 'You declined the permission request. You can close this window.';
+  if (window.opener) {
+    window.opener.postMessage({type:'oauth_callback', error: error}, window.location.origin);
+    setTimeout(function(){ window.close(); }, 2000);
+  }
+} else if (code) {
+  document.getElementById('icon').textContent = '✅';
+  document.getElementById('title').textContent = 'Connected!';
+  document.getElementById('sub').textContent = 'Authorization successful. Fetching your account data now...';
+  if (window.opener) {
+    window.opener.postMessage({type:'oauth_callback', code: code, state: state}, window.location.origin);
+    setTimeout(function(){ window.close(); }, 1500);
+  }
+} else {
+  document.getElementById('icon').textContent = '⚠️';
+  document.getElementById('title').textContent = 'Something went wrong';
+  document.getElementById('sub').textContent = 'No authorization code received. Please try again.';
+}
+</script>
+</body>
+</html>
